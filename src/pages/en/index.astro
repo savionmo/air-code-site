@@ -11,7 +11,6 @@ const hotAirports = hotCodes.map(c=>airports.find(a=>a.iata===c)).filter(Boolean
 const hotAirlineCodes = ['CA','MU','CZ','HU','CX','SQ','LH','BA','EK','NH'];
 const hotAirlines = hotAirlineCodes.map(c=>airlines.find(a=>a.iata===c)).filter(Boolean);
 const news = newsAll.filter(n=>n.lang===lang).slice(0,4);
-const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 const aname = a => lang==='zh' ? (a.name_zh||a.name_en) : a.name_en;
 const acity = a => lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
 ---
@@ -38,9 +37,6 @@ const acity = a => lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
 <a class="acard" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><span class="code sm">{a.iata}</span><span class="acard-t"><b>{aname(a)}</b><i>{acity(a)} · {a.country_en}</i></span></a>
 ))}
 </div>
-
-<div class="sec-head"><h2>{t('按字母找机场','Airports A–Z')}</h2></div>
-<div class="chips">{letters.map(l=><a class="chip" href={`/${lang}/airport/#${l}`}>{l}</a>)}</div>
 
 <div class="sec-head"><h2>{t('热门航空公司','Popular Airlines')}</h2><a class="more" href={`/${lang}/airline/`}>{t('全部航司 →','All airlines →')}</a></div>
 <div class="rows">
