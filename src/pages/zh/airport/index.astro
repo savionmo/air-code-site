@@ -2,18 +2,19 @@
 import Base from '../../../layouts/Base.astro';
 import airports from '../../../data/airports';
 import newsAll from '../../../data/news.json';
+import countryZh from '../../../data/country-zh.json';
 const lang='zh';
 const t=(zh,en)=>lang==='zh'?zh:en;
-const CONT=[['all',t('全部机场','All airports')],['AS',t('亚洲','Asia')],['EU',t('欧洲','Europe')],['NA',t('北美洲','North America')],['SA',t('南美洲','South America')],['AF',t('非洲','Africa')],['OC',t('大洋洲','Oceania')]];
+const CONT=[['all',t('全部','All')],['AS',t('亚洲','Asia')],['EU',t('欧洲','Europe')],['NA',t('北美洲','North America')],['SA',t('南美洲','South America')],['AF',t('非洲','Africa')],['OC',t('大洋洲','Oceania')]];
 const counts={}; for(const a of airports){counts[a.continent]=(counts[a.continent]||0)+1;}
-const data=airports.map(a=>({i:a.iata,o:a.icao||'',zh:a.name_zh||'',en:a.name_en,c:lang==='zh'?(a.city_zh||a.city_en):a.city_en,ce:a.country_en||'',ct:a.continent||'OT'}));
+const data=airports.map(a=>({i:a.iata,o:a.icao||'',zh:a.name_zh||'',en:a.name_en,c:a.city_zh||a.city_en,ce:a.country_en||'',cn:countryZh[a.country_code]||a.country_en||'',cc:(a.country_code||'').toLowerCase(),main:a.type==='large_airport',ct:a.continent||'OT'}));
 const hot=['PEK','PVG','CAN','SZX','HKG','SIN','LHR','JFK','CDG','DXB'];
 const hotAirports=hot.map(c=>airports.find(a=>a.iata===c)).filter(Boolean);
 const news=newsAll.filter(n=>n.lang===lang).slice(0,5);
-const byC={}; for(const a of airports){const k=a.country_en||a.country_code;byC[k]=(byC[k]||0)+1;}
-const topC=Object.entries(byC).sort((x,y)=>y[1]-x[1]).slice(0,12);
+const byC={}; for(const a of airports){const k=a.country_en||a.country_code;byC[k]={n:countryZh[a.country_code]||k,c:(byC[k]?.c||0)+1};}
+const topC=Object.entries(byC).sort((x,y)=>y[1].c-x[1].c).slice(0,12);
 const aname=a=>lang==='zh'?(a.name_zh||a.name_en):a.name_en;
-const acity=a=>lang==='zh'?(a.city_zh||a.city_en):a.city_en;
+const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>';
 ---
 <Base title={t('机场查询_机场三字代码查询','Airport Lookup_IATA Codes')} lang={lang} description={t('全球机场 IATA 三字代码、ICAO 四字码查询，按大洲筛选。','Look up airport IATA/ICAO codes worldwide, filter by continent.')}>
 <style>
@@ -31,22 +32,11 @@ const acity=a=>lang==='zh'?(a.city_zh||a.city_en):a.city_en;
 :global(.hotq a){color:#fff;background:rgba(255,255,255,.18);padding:4px 12px;border-radius:999px;font-size:13px}
 :global(.hotq a:hover){background:#fff;color:var(--fb);text-decoration:none}
 :global(.apt-cols){display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:18px;align-items:start}
-:global(.ctabs){display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 14px}
+:global(.ctabs){display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 4px}
 :global(.ctab){border:1px solid var(--line);background:#fff;color:var(--ink);font-size:14px;font-weight:600;padding:8px 16px;border-radius:999px;cursor:pointer}
 :global(.ctab small){font-weight:400;color:var(--muted);margin-left:4px}
 :global(.ctab.on){background:var(--fb);border-color:var(--fb);color:#fff}
 :global(.ctab.on small){color:rgba(255,255,255,.85)}
-:global(.tablewrap){background:#fff;border:1px solid var(--line);border-radius:14px;overflow-x:auto;box-shadow:0 1px 3px rgba(16,24,40,.06)}
-:global(table.dtable){width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
-:global(.dtable thead th){background:var(--fb);color:#fff;font-weight:700;text-align:left;padding:11px 12px;white-space:nowrap;font-size:13.5px}
-:global(.dtable thead th:first-child){border-radius:0}
-:global(.dtable tbody td){padding:10px 12px;border-bottom:1px solid #F0F2F5;vertical-align:middle}
-:global(.dtable tbody tr:hover td){background:#F3F8FF}
-:global(.dtable tbody tr:last-child td){border-bottom:0}
-:global(.tcode){font-weight:800;font-size:16px;letter-spacing:1px;color:var(--fb)}
-:global(.tcode:hover){text-decoration:underline}
-:global(.idx){color:#9AA1AB;font-size:13px}
-:global(.en2){color:var(--muted);font-size:12.5px}
 :global(.pager){display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:18px 0 6px;align-items:center}
 :global(.pg){min-width:36px;text-align:center;padding:7px 10px;border:1px solid var(--line);background:#fff;border-radius:9px;font-size:13.5px;color:var(--ink);cursor:pointer;font-weight:600}
 :global(.pg.on){background:var(--fb);border-color:var(--fb);color:#fff}
@@ -54,16 +44,17 @@ const acity=a=>lang==='zh'?(a.city_zh||a.city_en):a.city_en;
 :global(.pg.on:hover){color:#fff}
 :global(.pg.dis){opacity:.4;pointer-events:none}
 :global(.pginfo){font-size:13px;color:var(--muted);width:100%;text-align:center;margin-top:2px}
-:global(.emptyrow td){text-align:center;padding:34px 12px!important;color:var(--muted)}
+:global(.emptycard){background:#fff;border:1px solid var(--line);border-radius:16px;padding:34px;text-align:center;color:var(--muted)}
 :global(.sidecard){background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
 :global(.sidecard h3){margin:0 0 10px;font-size:15.5px;display:flex;align-items:center;gap:8px}
 :global(.sidecard h3::before){content:"";width:4px;height:16px;border-radius:2px;background:var(--fb)}
 :global(.sidelink){display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid #F4F6F8;font-size:14px;color:var(--ink)}
 :global(.sidelink:last-child){border-bottom:0}
 :global(a.sidelink:hover){color:var(--fb);text-decoration:none}
+:global(.sflag){width:26px;height:18px;object-fit:cover;border-radius:4px;flex:none;box-shadow:0 1px 2px rgba(0,0,0,.15);background:#eef1f5}
 :global(.sidechips){display:flex;flex-wrap:wrap;gap:7px}
-:global(.sidechips a){font-size:13px;background:#F0F2F5;color:var(--ink);padding:5px 11px;border-radius:999px}
-:global(.sidechips a:hover){background:var(--fb);color:#fff;text-decoration:none}
+:global(.sidechips button){font-size:13px;background:#F0F2F5;color:var(--ink);padding:5px 11px;border-radius:999px;border:0;cursor:pointer}
+:global(.sidechips button:hover){background:var(--fb);color:#fff}
 :global(.sidenews a){display:block;font-size:13.5px;color:var(--ink);padding:6px 0;border-bottom:1px solid #F4F6F8}
 :global(.sidenews a:last-child){border-bottom:0}
 :global(.sidenews a:hover){color:var(--fb);text-decoration:none}
@@ -83,56 +74,64 @@ const acity=a=>lang==='zh'?(a.city_zh||a.city_en):a.city_en;
 <div class="apt-cols">
 <div class="apt-main">
 <div class="ctabs" id="ctabs">
-{CONT.map(([k,label])=><button class={'ctab'+(k==='all'?' on':'')} data-c={k}>{label}<small>{k==='all'?airports.length:(counts[k]||0)}</small></button>)}
+{CONT.map(([k,label])=><button class={'ctab'+(k==='all'?' on':'')} data-c={k}>{k==='all'?t('全部','All'):label}<small>{k==='all'?airports.length:(counts[k]||0)}</small></button>)}
 </div>
-<div class="tablewrap"><table class="dtable">
-<thead><tr><th>{t('序号','#')}</th><th>{t('三字码','IATA')}</th><th>{t('中文名','Chinese')}</th><th>{t('英文名','English')}</th><th>{t('四字码','ICAO')}</th><th>{t('国家','Country')}</th></tr></thead>
-<tbody id="atbody"></tbody>
-</table></div>
+<div class="listhead"><h2><span class="bar"></span><span id="ltitle">{t('全部机场','All Airports')}</span></h2>
+<select class="sortsel" id="asort"><option value="d">{t('⇅ 默认排序','⇅ Default')}</option><option value="i">{t('⇅ 按三字码','⇅ By IATA')}</option><option value="c">{t('⇅ 按国家','⇅ By country')}</option></select></div>
+<div id="alist"></div>
 <div class="pager" id="apager"></div>
 </div>
 <aside class="apt-side">
 <div class="sidecard"><h3>{t('热门机场','Popular Airports')}</h3>
-{hotAirports.map(a=><a class="sidelink" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><span class="code sm">{a.iata}</span>{aname(a)}</a>)}
+{hotAirports.map(a=><a class="sidelink" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><img class="sflag" src={`/flags/${(a.country_code||'').toLowerCase()}.svg`} alt="" loading="lazy" /><span class="code sm">{a.iata}</span>{aname(a)}</a>)}
 </div>
 <div class="sidecard"><h3>{t('最新资讯','Latest News')}</h3><div class="sidenews">
 {news.map(n=><a href={`/${lang}/news/${n.slug}/`}>{n.title}<span>{n.date}</span></a>)}
 </div></div>
 <div class="sidecard"><h3>{t('按国家','By Country')}</h3><div class="sidechips">
-{topC.map(([c,n])=><a href="javascript:void(0)" data-cc={c}>{c} ({n})</a>)}
+{topC.map(([k,v])=><button data-cc={k}>{v.n} ({v.c})</button>)}
 </div></div>
 </aside>
 </div>
 
-<script define:vars={{ DATA:data, lang, total:airports.length }}>
-const PER=50; let cont='all', q='', page=1;
+<script define:vars={{ DATA:data, lang, PIN }}>
+const PER=15; let cont='all', q='', page=1, sort='d';
 const $=id=>document.getElementById(id);
 const T=(zh,en)=>lang==='zh'?zh:en;
-function match(x){ const nq=q.trim().toLowerCase(); if(cont!=='all'&&x.ct!==cont)return false; if(!nq)return true; return [x.i,x.o,x.zh,x.en,x.c,x.ce].join(' ').toLowerCase().includes(nq); }
-function rowHtml(x,idx){
+const CL={all:T('全部','All'),AS:T('亚洲','Asia'),EU:T('欧洲','Europe'),NA:T('北美洲','North America'),SA:T('南美洲','South America'),AF:T('非洲','Africa'),OC:T('大洋洲','Oceania')};
+function match(x){ const nq=q.trim().toLowerCase(); if(cont!=='all'&&x.ct!==cont)return false; if(!nq)return true; return [x.i,x.o,x.zh,x.en,x.c,x.cn,x.ce].join(' ').toLowerCase().includes(nq); }
+function card(x){
   const url=`/${lang}/airport/${x.i.toLowerCase()}/`;
-  const nm1=lang==='zh'?(x.zh||x.en):x.en, nm2=lang==='zh'?x.en:'';
-  return `<tr><td class="idx">${idx}</td><td><a class="tcode" href="${url}">${x.i}</a></td><td>${nm1}</td><td class="en2">${nm2}</td><td>${x.o||'-'}</td><td>${x.ce}</td></tr>`;
+  const nm=lang==='zh'?(x.zh||x.en):x.en;
+  const loc=lang==='zh'?`${x.cn} · ${x.c}`:`${x.c} · ${x.ce}`;
+  return `<a class="apcard" href="${url}"><img class="flag" src="/flags/${x.cc}.svg" alt="" loading="lazy">`+
+  `<span class="apinfo"><span class="nm">${nm}${x.main?`<i class="mainbadge">${T('主机场','Main airport')}</i>`:''}</span>`+
+  `<span class="en">${x.en}</span><span class="loc">${PIN}${loc}</span></span>`+
+  `<span class="apcode"><b>${x.i}</b><i>${x.o||''}</i></span><span class="go">›</span></a>`;
 }
 function render(){
-  const list=DATA.filter(match);
+  let list=DATA.filter(match);
+  if(sort==='i')list=[...list].sort((a,b)=>a.i<b.i?-1:1);
+  else if(sort==='c')list=[...list].sort((a,b)=>((lang==='zh'?a.cn:a.ce)+a.i)<((lang==='zh'?b.cn:b.ce)+b.i)?-1:1);
   const pages=Math.max(1,Math.ceil(list.length/PER));
   if(page>pages)page=pages;
   const s=(page-1)*PER, rows=list.slice(s,s+PER);
-  $('atbody').innerHTML=rows.length?rows.map((x,i)=>rowHtml(x,s+i+1)).join(''):`<tr class="emptyrow"><td colspan="6">${T('没有找到匹配的机场，换个关键词试试','No matching airports — try another keyword')}</td></tr>`;
+  $('alist').innerHTML=rows.length?rows.map(card).join(''):`<div class="emptycard">${T('没有找到匹配的机场，换个关键词试试','No matching airports — try another keyword')}</div>`;
+  $('ltitle').textContent=(cont==='all'?T('全部机场','All Airports'):CL[cont]+T('机场',' Airports'))+(q?` · “${q.trim()}”`:'')+`（${list.length}）`;
   let h=`<button class="pg${page===1?' dis':''}" data-p="${page-1}">${T('上一页','Prev')}</button>`;
   const win=[]; for(let p=1;p<=pages;p++){ if(p===1||p===pages||Math.abs(p-page)<=2) win.push(p); }
-  let last=0; for(const p of win){ if(p-last>1)h+=`<span class="pginfo" style="width:auto">…</span>`; h+=`<button class="pg${p===page?' on':''}" data-p="${p}">${p}</button>`; last=p; }
+  let last=0; for(const p of win){ if(p-last>1)h+=`<span style="color:var(--muted)">…</span>`; h+=`<button class="pg${p===page?' on':''}" data-p="${p}">${p}</button>`; last=p; }
   h+=`<button class="pg${page===pages?' dis':''}" data-p="${page+1}">${T('下一页','Next')}</button>`;
   h+=`<span class="pginfo">${T('共','')}${list.length}${T(' 条',' results')} · ${T('第','Page')} ${page}/${pages} ${T('页','')}</span>`;
   $('apager').innerHTML=h;
 }
 $('apager').addEventListener('click',e=>{ const b=e.target.closest('button[data-p]'); if(!b||b.classList.contains('dis'))return; page=+b.dataset.p; render(); window.scrollTo({top:$('ctabs').offsetTop-140,behavior:'smooth'}); });
 $('ctabs').addEventListener('click',e=>{ const b=e.target.closest('button.ctab'); if(!b)return; cont=b.dataset.c; page=1; document.querySelectorAll('#ctabs .ctab').forEach(x=>x.classList.toggle('on',x===b)); render(); });
+$('asort').addEventListener('change',e=>{ sort=e.target.value; page=1; render(); });
 function doSearch(v){ q=v; page=1; render(); }
 $('aq').addEventListener('input',e=>doSearch(e.target.value));
 $('ago').addEventListener('click',()=>doSearch($('aq').value));
-document.querySelectorAll('[data-cc]').forEach(a=>a.addEventListener('click',()=>{ $('aq').value=a.dataset.cc; doSearch(a.dataset.cc); window.scrollTo({top:0,behavior:'smooth'}); }));
+document.querySelectorAll('[data-cc]').forEach(b=>b.addEventListener('click',()=>{ $('aq').value=b.dataset.cc; doSearch(b.dataset.cc); window.scrollTo({top:0,behavior:'smooth'}); }));
 render();
 </script>
 </Base>

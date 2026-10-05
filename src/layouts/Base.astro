@@ -22,7 +22,7 @@ const nav = [
 <link rel="alternate" hreflang="zh" href={new URL(`/zh${path}`, Astro.site)} />
 <link rel="alternate" hreflang="en" href={new URL(`/en${path}`, Astro.site)} />
 <link rel="icon" href="/favicon.svg" />
-<style>
+<style is:global>
 :root{--fb:#1877F2;--fb-dark:#1466D8;--fb-deep:#0A46A8;--bg:#F0F2F5;--ink:#17242F;--muted:#65676B;--line:#E3E6EA;--r:14px}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -125,6 +125,27 @@ a.acard:hover{border-color:var(--fb);box-shadow:0 3px 10px rgba(24,119,242,.18);
 .chip:hover{border-color:var(--fb);color:var(--fb);text-decoration:none;box-shadow:0 1px 4px rgba(24,119,242,.2)}
 .badge{display:inline-block;background:#E7F0FE;color:var(--fb);padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
 .muted{color:var(--muted)}
+/* ===== 5688-style airport cards (shared by list + detail related) ===== */
+.apcard{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid transparent;border-radius:16px;padding:16px;margin:0 0 12px;box-shadow:0 1px 4px rgba(16,24,40,.07)}
+a.apcard:hover{border-color:var(--fb);text-decoration:none;box-shadow:0 4px 16px rgba(24,119,242,.16)}
+.apcard .flag{width:64px;height:44px;object-fit:cover;border-radius:8px;flex:none;box-shadow:0 1px 3px rgba(0,0,0,.18);background:#eef1f5}
+.apinfo{flex:1;min-width:0}
+.apinfo .nm{font-size:16.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.35}
+.mainbadge{font-style:normal;font-size:12px;font-weight:700;color:#F59300;background:#FFF4E0;padding:3px 9px;border-radius:7px;white-space:nowrap}
+.apinfo .en{display:block;color:#9AA1AB;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.apinfo .loc{display:flex;align-items:center;gap:5px;color:#9AA1AB;font-size:13px;margin-top:4px}
+.apinfo .loc svg{width:14px;height:14px;flex:none}
+.apcode{text-align:right;flex:none}
+.apcode b{display:block;font-size:24px;font-weight:800;letter-spacing:1px;color:var(--ink)}
+.apcode i{font-style:normal;font-size:12.5px;color:#9AA1AB;letter-spacing:1px}
+a.apcard:hover .apcode b{color:var(--fb)}
+.apcard .go{flex:none;width:34px;height:34px;border-radius:50%;background:#F4F6F8;color:#9AA1AB;display:flex;align-items:center;justify-content:center;font-size:18px}
+a.apcard:hover .go{background:var(--fb);color:#fff}
+.listhead{display:flex;align-items:center;justify-content:space-between;margin:22px 0 14px;gap:10px}
+.listhead h2{font-size:20px;margin:0;display:flex;align-items:center;gap:10px}
+.listhead h2 .bar{width:5px;height:22px;border-radius:3px;background:var(--fb);display:inline-block}
+.sortsel{border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13.5px;color:var(--muted);background:#fff;cursor:pointer;flex:none}
+@media(max-width:520px){.apcard .flag{width:48px;height:34px;gap:10px}.apcard{gap:10px;padding:13px}.apcode b{font-size:20px}.apinfo .nm{font-size:15px}}
 .sec{font-size:18px;margin:24px 2px 10px}
 /* ===== hero & search ===== */
 .hero{background:linear-gradient(160deg,#1F8BF7 0%,var(--fb-deep) 100%);color:#fff;border-radius:18px;padding:30px 22px 24px;margin:4px 0 8px;box-shadow:0 8px 24px rgba(11,76,184,.3)}
