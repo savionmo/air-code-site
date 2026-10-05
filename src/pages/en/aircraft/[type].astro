@@ -1,0 +1,53 @@
+---
+import Base from '../../../layouts/Base.astro';
+import aircraft from '../../../data/aircraft.json';
+export function getStaticPaths(){ return aircraft.map(p=>({ params:{ type:p.iata.toLowerCase() }, props:{ p } })); }
+const { p } = Astro.props; const lang='en';
+const t=(zh,en)=>lang==='zh'?zh:en;
+const ch=lang==='zh'?(p.mfr_zh[0]||'✈'):(p.mfr_en[0]||'✈');
+const sameMfr=aircraft.filter(x=>x.mfr_en===p.mfr_en&&x.iata!==p.iata).slice(0,8);
+const rch=x=>lang==='zh'?(x.mfr_zh[0]||'✈'):(x.mfr_en[0]||'✈');
+---
+<Base title={`${p.iata} ${lang==='zh'?p.name_zh:p.name_en}`} lang={lang} description={`${p.iata} / ${p.icao} ${t('机型代码查询','aircraft type lookup')}`}>
+<style>
+:global(.mfrb){width:64px;height:44px;flex:none;border-radius:8px;background:linear-gradient(135deg,#1F8BF7,#0A46A8);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+@media(max-width:600px){:global(.mfrb){width:48px;height:34px;font-size:18px}}
+</style>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/aircraft/`}>{t('飞机机型','Aircraft')}</a><span class="sep">›</span>{p.iata}</div>
+
+<section class="apcard">
+<span class="mfrb">{ch}</span>
+<span class="apinfo">
+<span class="nm">{lang==='zh'?p.name_zh:p.name_en}</span>
+<span class="en">{p.name_en}</span>
+<span class="loc">{lang==='zh'?p.mfr_zh:p.mfr_en}</span>
+</span>
+<span class="apcode"><b>{p.iata}</b><i>{p.icao}</i></span>
+</section>
+
+<div class="kv">
+<div class="kvr"><span class="k">{t('IATA 机型','IATA type')}</span><b>{p.iata}</b></div>
+<div class="kvr"><span class="k">{t('ICAO 机型','ICAO type')}</span><b>{p.icao}</b></div>
+<div class="kvr"><span class="k">{t('制造商','Maker')}</span>{p.mfr_zh}{p.mfr_en!==p.mfr_zh?` / ${p.mfr_en}`:''}</div>
+<div class="kvr"><span class="k">{t('中文名','Name (ZH)')}</span>{p.name_zh}</div>
+<div class="kvr"><span class="k">{t('英文名','Name (EN)')}</span>{p.name_en}</div>
+</div>
+
+{sameMfr.length>0 && (
+<div><div class="sec-head"><h2>{lang==='zh'?`${p.mfr_zh}其他机型`:`More ${p.mfr_en} types`}</h2><a class="more" href={`/${lang}/aircraft/`}>{t('全部机型 →','All types →')}</a></div>
+{sameMfr.map(x=>(
+<a class="apcard" href={`/${lang}/aircraft/${x.iata.toLowerCase()}/`}>
+<span class="mfrb">{rch(x)}</span>
+<span class="apinfo">
+<span class="nm">{lang==='zh'?x.name_zh:x.name_en}</span>
+<span class="en">{x.name_en}</span>
+<span class="loc">{lang==='zh'?x.mfr_zh:x.mfr_en}</span>
+</span>
+<span class="apcode"><b>{x.iata}</b><i>{x.icao}</i></span>
+<span class="go">›</span>
+</a>
+))}
+</div>
+)}
+<p class="muted" style="font-size:13px;margin-top:16px">{t('客舱布局（LOPA）、货舱布局与 ULD 集装器分配等扩展资料收集中，核对公开手册后陆续上线。','Cabin LOPA, cargo hold and ULD allocation data are being collected from public manuals.')}</p>
+</Base>

@@ -1,0 +1,92 @@
+---
+import Base from '../../../layouts/Base.astro';
+const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
+const KIND=[t('机场','Airport'),t('航空公司','Airline'),t('机型','Aircraft')];
+const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>';
+---
+<Base title={t('全站搜索','Site Search')} lang={lang} description={t('搜索机场三字码、航空公司二字码、飞机机型','Search airports, airlines and aircraft types')}>
+<style>
+:global(.sh-hero){background:linear-gradient(150deg,#1F8BF7 0%,#0A46A8 100%);border-radius:18px;padding:26px 22px 22px;margin:2px 0 18px;box-shadow:0 8px 24px rgba(11,76,184,.3);color:#fff}
+:global(.sh-hero h1){margin:0 0 14px;font-size:24px}
+:global(.capsule){display:flex;background:#fff;border-radius:999px;padding:6px;box-shadow:0 4px 16px rgba(0,0,0,.16);max-width:560px}
+:global(.capsule input){flex:1;min-width:0;border:0;outline:none;font-size:15.5px;padding:10px 16px;border-radius:999px;background:transparent}
+:global(.capsule button){flex:none;border:0;background:var(--fb);color:#fff;font-size:15.5px;font-weight:700;padding:10px 30px;border-radius:999px;cursor:pointer}
+:global(.ktabs){display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 6px}
+:global(.ktab){border:1px solid var(--line);background:#fff;color:var(--ink);font-size:14px;font-weight:600;padding:8px 16px;border-radius:999px;cursor:pointer}
+:global(.ktab small){font-weight:400;color:var(--muted);margin-left:4px}
+:global(.ktab.on){background:var(--fb);border-color:var(--fb);color:#fff}
+:global(.ktab.on small){color:rgba(255,255,255,.85)}
+:global(.mfrb){width:64px;height:44px;flex:none;border-radius:8px;background:linear-gradient(135deg,#1F8BF7,#0A46A8);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+:global(.pager){display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:18px 0 6px;align-items:center}
+:global(.pg){min-width:36px;text-align:center;padding:7px 10px;border:1px solid var(--line);background:#fff;border-radius:9px;font-size:13.5px;color:var(--ink);cursor:pointer;font-weight:600}
+:global(.pg.on){background:var(--fb);border-color:var(--fb);color:#fff}
+:global(.pg.dis){opacity:.4;pointer-events:none}
+@media(max-width:520px){:global(.mfrb){width:48px;height:34px;font-size:18px}}
+</style>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span>{t('搜索','Search')}</div>
+<section class="sh-hero">
+<h1>{t('全站搜索','Site Search')}</h1>
+<div class="capsule"><input id="sq" type="search" placeholder={t('搜机场三字码 / 航司二字码 / 机型，如 PEK、CA、738','Airport / airline / aircraft, e.g. PEK, CA, 738')} autocomplete="off" /><button id="sgo">{t('搜索','Search')}</button></div>
+</section>
+<div class="ktabs" id="ktabs"></div>
+<div class="listhead"><h2><span class="bar"></span><span id="stitle">{t('搜索结果','Results')}</span></h2></div>
+<div id="slist"><div class="emptycard">{t('输入关键词开始搜索','Type a keyword to search')}</div></div>
+<div class="pager" id="spager"></div>
+<script define:vars={{lang,PIN,KIND}} is:inline>
+(function(){
+const $=id=>document.getElementById(id);
+const T=(zh,en)=>lang==='zh'?zh:en;
+const PER=20;let IDX=null,q='',kind=-1,page=1;
+const params=new URLSearchParams(location.search);
+q=params.get('q')||'';$('sq').value=q;
+function left(it){
+  if(it[0]===2){const ch=lang==='zh'?(it[5]||'')[0]:(it[6]||'')[0];return `<span class="mfrb">${ch||'✈'}</span>`;}
+  if(it[7])return `<img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3/${it[7]}.svg" alt="" loading="lazy">`;
+  return `<span class="mfrb">✈</span>`;
+}
+function card(it){
+  const nm=lang==='zh'?(it[3]||it[4]):it[4], sub=lang==='zh'?it[5]:it[6];
+  const loc=it[0]===0?`<span class="loc">${PIN}${sub}</span>`:(sub?`<span class="loc">${sub}</span>`:'');
+  const en2=lang==='zh'?`<span class="en">${it[4]}</span>`:'';
+  return `<a class="apcard" href="/${lang}/${it[8]}">${left(it)}<span class="apinfo"><span class="nm">${nm}</span>${en2}${loc}</span><span class="apcode"><b>${it[1]}</b><i>${it[2]||''}</i></span><span class="go">›</span></a>`;
+}
+function matched(){
+  if(!q||!IDX)return [];
+  const nq=q.toLowerCase();
+  const hits=[];
+  for(const it of IDX){
+    const hay=(it[1]+' '+it[2]+' '+it[3]+' '+it[4]+' '+it[5]+' '+it[6]).toLowerCase();
+    if(!hay.includes(nq))continue;
+    if(kind!==-1&&it[0]!==kind)continue;
+    const code=it[1].toLowerCase();
+    const s=code===nq?0:code.startsWith(nq)?1:code.includes(nq)?2:3;
+    hits.push([s,it]);
+  }
+  hits.sort((a,b)=>a[0]-b[0]||(a[1][1]<b[1][1]?-1:1));
+  return hits.map(h=>h[1]);
+}
+function render(){
+  const all=matched();
+  const counts=[0,1,2].map(k=>all.filter(it=>it[0]===k).length);
+  $('ktabs').innerHTML=`<button class="ktab${kind===-1?' on':''}" data-k="-1">${T('全部','All')}<small>${all.length}</small></button>`+
+    counts.map((c,k)=>`<button class="ktab${kind===k?' on':''}" data-k="${k}">${KIND[k]}<small>${c}</small></button>`).join('');
+  const pages=Math.max(1,Math.ceil(all.length/PER));if(page>pages)page=pages;
+  const rows=all.slice((page-1)*PER,page*PER);
+  $('slist').innerHTML=q?(rows.length?rows.map(card).join(''):`<div class="emptycard">${T('没有找到匹配结果，换个关键词试试','No results — try another keyword')}</div>`):`<div class="emptycard">${T('输入关键词开始搜索','Type a keyword to search')}</div>`;
+  $('stitle').textContent=q?T(`“${q}”的搜索结果（${all.length}）`,`Results for "${q}" (${all.length})`):T('搜索结果','Results');
+  let h='';if(pages>1){h+=`<button class="pg${page===1?' dis':''}" data-p="${page-1}">${T('上一页','Prev')}</button>`;
+    for(let p=1;p<=pages;p++){if(p===1||p===pages||Math.abs(p-page)<=2)h+=`<button class="pg${p===page?' on':''}" data-p="${p}">${p}</button>`;}
+    h+=`<button class="pg${page===pages?' dis':''}" data-p="${page+1}">${T('下一页','Next')}</button>`;}
+  $('spager').innerHTML=h;
+}
+async function ensure(){ if(IDX)return; const r=await fetch('/search-suggest.json'); IDX=await r.json(); render(); }
+$('ktabs').addEventListener('click',e=>{const b=e.target.closest('button.ktab');if(!b)return;kind=+b.dataset.k;page=1;render();});
+$('spager').addEventListener('click',e=>{const b=e.target.closest('button[data-p]');if(!b||b.classList.contains('dis'))return;page=+b.dataset.p;render();window.scrollTo({top:0,behavior:'smooth'});});
+function go(){q=$('sq').value.trim();page=1;kind=-1;history.replaceState(null,'',`/${lang}/search/?q=${encodeURIComponent(q)}`);render();}
+$('sgo').addEventListener('click',go);
+$('sq').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+ensure();
+})();
+</script>
+</Base>

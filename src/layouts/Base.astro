@@ -40,9 +40,27 @@ img{max-width:100%}
 .menu{display:flex;gap:2px;flex-wrap:wrap}
 .menu a{color:#fff;font-size:14px;padding:7px 12px;border-radius:999px;opacity:.94;font-weight:500}
 .menu a:hover{background:rgba(255,255,255,.18);text-decoration:none;opacity:1}
-.langsel{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13px}
+.langsel{display:flex;align-items:center;gap:4px;font-size:13px}
 .langsel a{color:#fff;opacity:.8;padding:5px 10px;border-radius:999px}
 .langsel a.on,.langsel a:hover{background:rgba(255,255,255,.22);opacity:1;text-decoration:none;font-weight:700}
+/* ===== global header search ===== */
+.gsearch{position:relative;margin-left:auto}
+.gsearch input{width:230px;border:0;outline:none;background:rgba(255,255,255,.16);color:#fff;font-size:13.5px;padding:8px 14px;border-radius:999px;transition:.2s}
+.gsearch input::placeholder{color:rgba(255,255,255,.75)}
+.gsearch input:focus{background:#fff;color:var(--ink);width:280px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.gsearch input::-webkit-search-cancel-button{filter:invert(1)}
+.gsearch input:focus::-webkit-search-cancel-button{filter:none}
+.gsr{position:absolute;top:calc(100% + 8px);right:0;width:360px;max-width:86vw;background:#fff;border-radius:14px;box-shadow:0 12px 34px rgba(10,40,90,.28);overflow:hidden;z-index:60}
+.gs-item{display:flex;align-items:center;gap:10px;padding:9px 14px;color:var(--ink)}
+.gs-item:hover{background:#F0F6FF;text-decoration:none}
+.gs-k{flex:none;font-size:11px;font-weight:700;color:var(--fb);background:#E7F0FE;padding:2px 7px;border-radius:6px}
+.gs-t{flex:1;min-width:0;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-t b{letter-spacing:.5px}
+.gs-t i{display:block;font-style:normal;font-size:12px;color:var(--muted)}
+.gs-all{display:block;text-align:center;font-size:13px;font-weight:700;color:var(--fb);padding:9px;border-top:1px solid #EFF1F4}
+.gs-all:hover{text-decoration:none;background:#F0F6FF}
+.gs-empty{padding:14px;font-size:13.5px;color:var(--muted);text-align:center}
+@media(max-width:760px){.gsearch{order:5;flex:1 1 100%;margin:6px 0 2px}.gsearch input,.gsearch input:focus{width:100%}.gsr{left:0;right:auto;width:min(360px,92vw)}}
 /* ===== layout ===== */
 main{max-width:1020px;margin:0 auto;padding:18px 14px 52px}
 /* ===== crumbs & page head ===== */
@@ -197,8 +215,53 @@ td,th{border-bottom:1px solid #EFF1F4;padding:9px;text-align:left}
 <header class="top"><div class="wrap">
 <a class="brand" href={`/${lang}/`}><span class="pl">✈</span>AirCode</a>
 <nav class="menu">{nav.map(n=><a href={n.href}>{lang==='zh'?n.zh:n.en}</a>)}</nav>
+<div class="gsearch">
+<input id="gsq" type="search" placeholder={lang==='zh'?'搜机场 / 航司 / 机型，如 PEK、CA、738':'Search airports / airlines / aircraft'} autocomplete="off" aria-label="search" />
+<div class="gsr" id="gsr" hidden></div>
+</div>
 <span class="langsel"><a class={lang==='zh'?'on':''} href={`/zh${path}`}>中文</a><a class={lang==='en'?'on':''} href={`/en${path}`}>EN</a></span>
 </div></header>
+<script is:inline define:vars={{lang}}>
+(function(){
+const input=document.getElementById('gsq'),box=document.getElementById('gsr');
+if(!input)return;
+let IDX=null,lang2=lang;
+const KL=lang2==='zh'?['机场','航司','机型']:['Airport','Airline','Aircraft'];
+async function ensure(){ if(IDX)return IDX;
+  try{ const r=await fetch('/search-suggest.json'); IDX=await r.json(); }catch(e){ IDX=[]; }
+  return IDX; }
+function score(it,q){
+  const code=it[1].toLowerCase(),zh=(it[3]||'').toLowerCase(),en=(it[4]||'').toLowerCase();
+  if(code===q)return 0; if(code.startsWith(q))return 1;
+  if(zh.startsWith(q)||en.startsWith(q))return 2;
+  if(code.includes(q))return 3; return 4;
+}
+async function onInput(){
+  const q=input.value.trim().toLowerCase();
+  if(!q){box.hidden=true;return;}
+  const idx=await ensure();
+  const hits=[];
+  for(const it of idx){ const hay=(it[1]+' '+it[2]+' '+it[3]+' '+it[4]+' '+it[5]+' '+it[6]).toLowerCase();
+    if(hay.includes(q))hits.push([score(it,q),it]);
+    if(hits.length>400)break; }
+  hits.sort((a,b)=>a[0]-b[0]||(a[1][1]<b[1][1]?-1:1));
+  const top=hits.slice(0,8);
+  if(!top.length){box.innerHTML='<div class="gs-empty">'+(lang2==='zh'?'无匹配结果，回车看全部搜索':'No matches — press Enter for full search')+'</div>';box.hidden=false;return;}
+  box.innerHTML=top.map(([s,it])=>{
+    const nm=lang2==='zh'?(it[3]||it[4]):it[4], sub=lang2==='zh'?it[5]:it[6];
+    return `<a class="gs-item" href="/${lang2}/${it[8]}"><span class="gs-k">${KL[it[0]]}</span><span class="gs-t"><b>${it[1]}</b> ${nm}${sub?`<i>${sub}</i>`:''}</span></a>`;
+  }).join('')+`<a class="gs-all" href="/${lang2}/search/?q=${encodeURIComponent(input.value.trim())}">`+(lang2==='zh'?`查看全部结果 →`:`See all results →`)+`</a>`;
+  box.hidden=false;
+}
+let deb=null;
+input.addEventListener('focus',ensure);
+input.addEventListener('input',()=>{clearTimeout(deb);deb=setTimeout(onInput,180);});
+input.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){const q=input.value.trim();if(q)location.href=`/${lang2}/search/?q=${encodeURIComponent(q)}`;}
+  if(e.key==='Escape'){box.hidden=true;input.blur();} });
+document.addEventListener('click',e=>{ if(!e.target.closest('.gsearch'))box.hidden=true; });
+})();
+</script>
 <main><slot /></main>
 <footer>
 <div class="fgrid">
