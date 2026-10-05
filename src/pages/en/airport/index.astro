@@ -1,4 +1,5 @@
 ---
+const FLAG="https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3";
 import Base from '../../../layouts/Base.astro';
 import airports from '../../../data/airports';
 import newsAll from '../../../data/news.json';
@@ -83,7 +84,7 @@ const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 </div>
 <aside class="apt-side">
 <div class="sidecard"><h3>{t('热门机场','Popular Airports')}</h3>
-{hotAirports.map(a=><a class="sidelink" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><img class="sflag" src={`/flags/${(a.country_code||'').toLowerCase()}.svg`} alt="" loading="lazy" /><span class="code sm">{a.iata}</span>{aname(a)}</a>)}
+{hotAirports.map(a=><a class="sidelink" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><img class="sflag" src={`${FLAG}/${(a.country_code||'').toLowerCase()}.svg`} alt="" loading="lazy" /><span class="code sm">{a.iata}</span>{aname(a)}</a>)}
 </div>
 <div class="sidecard"><h3>{t('最新资讯','Latest News')}</h3><div class="sidenews">
 {news.map(n=><a href={`/${lang}/news/${n.slug}/`}>{n.title}<span>{n.date}</span></a>)}
@@ -94,7 +95,7 @@ const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 </aside>
 </div>
 
-<script define:vars={{ DATA:data, lang, PIN }}>
+<script define:vars={{ DATA:data, lang, PIN, FLAG }}>
 const PER=15; let cont='all', q='', page=1, sort='d';
 const $=id=>document.getElementById(id);
 const T=(zh,en)=>lang==='zh'?zh:en;
@@ -104,7 +105,7 @@ function card(x){
   const url=`/${lang}/airport/${x.i.toLowerCase()}/`;
   const nm=lang==='zh'?(x.zh||x.en):x.en;
   const loc=lang==='zh'?`${x.cn} · ${x.c}`:`${x.c} · ${x.ce}`;
-  return `<a class="apcard" href="${url}"><img class="flag" src="/flags/${x.cc}.svg" alt="" loading="lazy">`+
+  return `<a class="apcard" href="${url}"><img class="flag" src="${FLAG}/${x.cc}.svg" alt="" loading="lazy">`+
   `<span class="apinfo"><span class="nm">${nm}${x.main?`<i class="mainbadge">${T('主机场','Main airport')}</i>`:''}</span>`+
   `<span class="en">${x.en}</span><span class="loc">${PIN}${loc}</span></span>`+
   `<span class="apcode"><b>${x.i}</b><i>${x.o||''}</i></span><span class="go">›</span></a>`;

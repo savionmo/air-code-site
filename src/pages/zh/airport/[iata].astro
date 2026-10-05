@@ -1,4 +1,5 @@
 ---
+const FLAG="https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3";
 import Base from '../../../layouts/Base.astro';
 import airports from '../../../data/airports';
 import countryZh from '../../../data/country-zh.json';
@@ -20,7 +21,7 @@ const rctry=x=>lang==='zh'?(countryZh[x.country_code]||x.country_en):x.country_e
 <div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/airport/`}>{t('机场三字码','Airports')}</a><span class="sep">›</span>{a.iata}</div>
 
 <section class="apcard">
-<img class="flag" src={`/flags/${(a.country_code||'').toLowerCase()}.svg`} alt="" />
+<img class="flag" src={`${FLAG}/${(a.country_code||'').toLowerCase()}.svg`} alt="" />
 <span class="apinfo">
 <span class="nm">{name}{main&&<i class="mainbadge">{t('主机场','Main airport')}</i>}</span>
 <span class="en">{a.name_en}</span>
@@ -46,7 +47,7 @@ const rctry=x=>lang==='zh'?(countryZh[x.country_code]||x.country_en):x.country_e
 <div><div class="sec-head"><h2>{t('同国家其他机场','More airports in '+a.country_en)}</h2><a class="more" href={`/${lang}/airport/`}>{t('全部机场 →','All airports →')}</a></div>
 {sameCountry.map(x=>(
 <a class="apcard" href={`/${lang}/airport/${x.iata.toLowerCase()}/`}>
-<img class="flag" src={`/flags/${(x.country_code||'').toLowerCase()}.svg`} alt="" loading="lazy" />
+<img class="flag" src={`${FLAG}/${(x.country_code||'').toLowerCase()}.svg`} alt="" loading="lazy" />
 <span class="apinfo">
 <span class="nm">{rname(x)}{x.type==='large_airport'&&<i class="mainbadge">{t('主机场','Main airport')}</i>}</span>
 <span class="en">{x.name_en}</span>

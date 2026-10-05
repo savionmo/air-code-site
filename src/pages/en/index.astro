@@ -1,4 +1,5 @@
 ---
+const FLAG="https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3";
 import Base from '../../layouts/Base.astro';
 import searchIndex from '../../data/search-index';
 import airports from '../../data/airports';
@@ -34,7 +35,7 @@ const acity = a => lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
 <div class="sec-head"><h2>{t('热门机场','Popular Airports')}</h2><a class="more" href={`/${lang}/airport/`}>{t('全部机场 →','All airports →')}</a></div>
 <div class="grid">
 {hotAirports.map(a=>(
-<a class="acard" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><img class="sflag" src={`/flags/${(a.country_code||'').toLowerCase()}.svg`} alt="" loading="lazy" /><span class="code sm">{a.iata}</span><span class="acard-t"><b>{aname(a)}</b><i>{acity(a)} · {a.country_en}</i></span></a>
+<a class="acard" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><img class="sflag" src={`${FLAG}/${(a.country_code||'').toLowerCase()}.svg`} alt="" loading="lazy" /><span class="code sm">{a.iata}</span><span class="acard-t"><b>{aname(a)}</b><i>{acity(a)} · {a.country_en}</i></span></a>
 ))}
 </div>
 
