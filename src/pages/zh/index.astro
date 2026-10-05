@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import searchIndex from '../../data/search-index';
+import airports from '../../data/airports';
+import airlines from '../../data/airlines';
+import newsAll from '../../data/news.json';
+const lang = 'zh';
+const t = (zh,en)=> lang==='zh'?zh:en;
+const hotCodes = ['PEK','PVG','CAN','SZX','HKG','SIN','LHR','JFK','CDG','DXB'];
+const hotAirports = hotCodes.map(c=>airports.find(a=>a.iata===c)).filter(Boolean);
+const hotAirlineCodes = ['CA','MU','CZ','HU','CX','SQ','LH','BA','EK','NH'];
+const hotAirlines = hotAirlineCodes.map(c=>airlines.find(a=>a.iata===c)).filter(Boolean);
+const news = newsAll.filter(n=>n.lang===lang).slice(0,3);
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+---
+<Base title={t('机场三字代码与航空公司代码查询','Airport IATA Codes & Airline Codes Lookup')} lang={lang} description={t('查询全球机场 IATA 三字代码、ICAO 代码、航空公司二字码与三字码。','Look up global airport IATA/ICAO codes and airline codes.')}>
+<section class="hero">
+<h1>{t('机场三字代码查询','Airport Code Lookup')}</h1>
+<p>{t('机场 IATA 三字码 · 航空公司代码 · 机型代码，一个搜索框查完（原型样本：机场 500 条 + 航空公司 992 家）','Airport IATA codes, airline codes and aircraft types in one search (prototype: 500 airports + 992 airlines)')}</p>
+<div class="tabs" id="tabs">
+<button data-kind="all" class="on">{t('全部','All')}</button>
+<button data-kind="airport">{t('机场','Airports')}</button>
+<button data-kind="airline">{t('航空公司','Airlines')}</button>
+<button data-kind="aircraft">{t('机型','Aircraft')}</button>
+</div>
+<div class="box">
+<input id="q" type="search" placeholder={t('试试 PEK / 北京 / CA / 77W','Try PEK / Beijing / CA / 77W')} />
+<div id="results" style="margin-top:6px"></div>
+</div>
+</section>
+
+<h2 class="sec">{t('热门机场','Popular Airports')}</h2>
+<div class="grid">
+{hotAirports.map(a=>(
+<a class="card" style="margin:0" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><span class="code">{a.iata}</span><br/><b>{lang==='zh'?(a.name_zh||a.name_en):a.name_en}</b><br/><span class="muted">{lang==='zh'?(a.city_zh||a.city_en):a.city_en} · {a.country_en} · {a.icao}</span></a>
+))}
+</div>
+
+<h2 class="sec">{t('按字母找机场','Airports A–Z')}</h2>
+<div>{letters.map(l=><a class="chip" href={`/${lang}/airport/#${l}`}>{l}</a>)}</div>
+
+<h2 class="sec">{t('热门航空公司','Popular Airlines')}</h2>
+<div class="card" style="padding:6px 16px">
+{hotAirlines.map(a=>(
+<div style="padding:9px 0;border-bottom:1px solid #EFF1F4"><a href={`/${lang}/airline/${a.iata.toLowerCase()}/`}><b>{a.iata}</b> {lang==='zh'?(a.name_zh||a.name_en):a.name_en}</a> <span class="badge">{a.icao}</span> <span class="muted">{a.country_en}</span></div>
+))}
+</div>
+
+<h2 class="sec">{t('飞机机型','Aircraft Types')} <span class="badge">{t('后期扩展','Coming later')}</span></h2>
+<div class="card">
+<p class="muted" style="margin:4px 0">{t('机型代码先上线，客舱布局 LOPA、货舱布局与 ULD 集装器分配资料在核对航司公开手册后逐步补充，不编造示意图。','Aircraft codes first; cabin LOPA, cargo hold layouts and ULD allocation will be added after verifying public airline manuals.')}</p>
+<a class="btn" href={`/${lang}/aircraft/`}>{t('查看机型板块','Browse aircraft types')}</a>
+</div>
+
+<h2 class="sec">{t('资讯','News & Guides')}</h2>
+{news.map(n=>(
+<div class="card"><a href={`/${lang}/news/${n.slug}/`}><b>{n.title}</b></a><br/><span class="muted">{n.date} · {n.description}</span></div>
+))}
+<a href={`/${lang}/news/`}>{t('全部资讯 →','All news →')}</a>
+
+<script define:vars={{ searchIndex, lang }}>
+let kind='all';
+const input=document.getElementById('q'); const box=document.getElementById('results');
+document.getElementById('tabs').addEventListener('click',e=>{ if(e.target.tagName!=='BUTTON')return; kind=e.target.dataset.kind; document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b===e.target)); input.dispatchEvent(new Event('input')); });
+function href(x){ if(x.kind==='airport')return `/${lang}/airport/${x.code.toLowerCase()}/`; if(x.kind==='airline')return `/${lang}/airline/${x.code.toLowerCase()}/`; return `/${lang}/aircraft/`; }
+function render(list){ box.innerHTML=list.slice(0,20).map(x=>{ const name=(lang==='zh'&&(x.zh))?x.zh:x.en; return `<div style="padding:8px 2px;border-bottom:1px solid #EFF1F4"><a href="${href(x)}"><b>${x.code}</b> ${name||''}</a> <span class="badge">${x.kind}</span> <span class="muted">${x.city_en||''} ${x.country_en||''}</span></div>`}).join('') || `<p class="muted">${lang==='zh'?'没有找到，换个关键词试试':'No results — try another keyword'}</p>` }
+input.addEventListener('input',()=>{ const q=input.value.trim().toLowerCase(); if(!q){box.innerHTML='';return} const list=searchIndex.filter(x=>(kind==='all'||x.kind===kind)&&[x.code,x.icao,x.en,x.zh,x.city_en,x.city_zh].join(' ').toLowerCase().includes(q)); render(list); });
+</script>
+</Base>

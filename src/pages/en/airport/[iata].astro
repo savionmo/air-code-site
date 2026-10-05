@@ -1,0 +1,22 @@
+---
+import Base from '../../../layouts/Base.astro';
+import airports from '../../../data/airports';
+export function getStaticPaths(){ return airports.map(a=>({ params:{ iata:a.iata.toLowerCase() }, props:{ a } })); }
+const { a } = Astro.props; const lang='en';
+const title = `${a.iata} ${lang==='zh'&&a.name_zh?a.name_zh:a.name_en}`;
+---
+<Base title={title} lang={lang} description={`${a.iata} / ${a.icao} airport code lookup`}>
+<p><a href={`/${lang}/airport/`}>← {lang==='zh'?'机场列表':'Airports'}</a></p>
+<h1>{a.iata} · {lang==='zh'&&a.name_zh?a.name_zh:a.name_en}</h1>
+<div class="card"><table>
+<tr><th>IATA</th><td>{a.iata}</td></tr>
+<tr><th>ICAO</th><td>{a.icao}</td></tr>
+<tr><th>{lang==='zh'?'英文名':'Name (EN)'}</th><td>{a.name_en}</td></tr>
+<tr><th>{lang==='zh'?'中文名':'Name (ZH)'}</th><td>{a.name_zh || (lang==='zh'?'（暂无中文名，保留英文）':'(Chinese name to be added)')} </td></tr>
+<tr><th>{lang==='zh'?'城市':'City'}</th><td>{lang==='zh'&&a.city_zh?a.city_zh+' / ':''}{a.city_en}</td></tr>
+<tr><th>{lang==='zh'?'国家':'Country'}</th><td>{a.country_en} ({a.country_code})</td></tr>
+<tr><th>{lang==='zh'?'经纬度':'Coordinates'}</th><td>{a.lat}, {a.lon}</td></tr>
+<tr><th>Type</th><td>{a.type}</td></tr>
+</table></div>
+<p class="muted">{lang==='zh'?'地图与跑道/航站楼等扩展字段后续接入 OurAirports runways 数据。':'Map, runways and terminals to be added from OurAirports runways data.'}</p>
+</Base>

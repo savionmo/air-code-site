@@ -1,0 +1,18 @@
+---
+import Base from '../../../layouts/Base.astro';
+import airlines from '../../../data/airlines';
+export function getStaticPaths(){ return airlines.map(a=>({ params:{ iata:a.iata.toLowerCase() }, props:{ a } })); }
+const { a } = Astro.props; const lang='zh';
+---
+<Base title={`${a.iata} ${a.name_en}`} lang={lang}>
+<p><a href={`/${lang}/airline/`}>← {lang==='zh'?'航空公司列表':'Airlines'}</a></p>
+<h1>{a.iata} · {lang==='zh'&&a.name_zh?a.name_zh:a.name_en}</h1>
+<div class="card"><table>
+<tr><th>IATA</th><td>{a.iata}</td></tr>
+<tr><th>ICAO</th><td>{a.icao||'-'}</td></tr>
+<tr><th>{lang==='zh'?'呼号':'Callsign'}</th><td>{a.callsign||'-'}</td></tr>
+<tr><th>{lang==='zh'?'国家':'Country'}</th><td>{a.country_en}</td></tr>
+<tr><th>{lang==='zh'?'联盟':'Alliance'}</th><td>{lang==='zh'?'（数据待补充：星空/天合/寰宇）':'(to be added: Star / SkyTeam / oneworld)'}</td></tr>
+<tr><th>{lang==='zh'?'常用机型':'Fleet (planned)'}</th><td><a href={`/${lang}/aircraft/`}>{lang==='zh'?'查看机型板块占位':'See aircraft section'}</a> {lang==='zh'?'（后续关联该航司机队机型与 LOPA）':'(fleet + LOPA to be linked)'}</td></tr>
+</table></div>
+</Base>

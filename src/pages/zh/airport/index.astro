@@ -1,0 +1,17 @@
+---
+import Base from '../../../layouts/Base.astro';
+import airports from '../../../data/airports';
+const lang='zh';
+const byLetter={}; const byCountry={};
+for(const a of airports){ const L=a.iata[0]; (byLetter[L] ||= []).push(a); const c=a.country_en||a.country_code; (byCountry[c] ||= []).push(a); }
+const letters=Object.keys(byLetter).sort(); const countries=Object.keys(byCountry).sort();
+---
+<Base title={lang==='zh'?'机场三字代码 A-Z 索引':'Airport Codes A-Z'} lang={lang}>
+<h1>{lang==='zh'?'机场三字代码':'Airport IATA Codes'}</h1>
+<p class="muted">{airports.length} {lang==='zh'?'条样本数据（全量 9051 条待导入）':'sample records (9,051 total to import)'}</p>
+<h2>A-Z</h2>
+<div>{letters.map(L=><a class="chip" href={`#${L}`}>{L}</a>)}</div>
+{letters.map(L=><section id={L}><h3>{L}</h3><div class="grid">{byLetter[L].map(a=><a class="card" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><b>{a.iata}</b> · {a.icao}<br/>{lang==='zh'&&a.name_zh?a.name_zh:a.name_en}<br/><span class="muted">{a.city_en} · {a.country_en}</span></a>)}</div></section>)}
+<h2>{lang==='zh'?'按国家':'By Country'}</h2>
+{countries.map(c=><details class="card"><summary>{c} ({byCountry[c].length})</summary><p>{byCountry[c].map(a=><a href={`/${lang}/airport/${a.iata.toLowerCase()}/`}>{a.iata} {a.city_en}</a>).reduce((acc,el,i,arr)=>i===0?[el]:[...acc,' · ',el],[])}</p></details>)}
+</Base>

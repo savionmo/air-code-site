@@ -1,0 +1,12 @@
+---
+import Base from '../../../layouts/Base.astro';
+import news from '../../../data/news.json';
+const lang='zh';
+const list = news.filter(n=>n.lang===lang);
+const fallback = news;
+---
+<Base title={lang==='zh'?'资讯':'News'} lang={lang}>
+<h1>{lang==='zh'?'资讯文章':'News & Guides'}</h1>
+{(list.length?list:fallback).map(n=><article class="card"><h2><a href={`/${lang}/news/${n.slug}/`}>{n.title}</a></h2><p class="muted">{n.date}</p><p>{n.description}</p></article>)}
+<p class="muted">{lang==='zh'?'后台：文章以 Markdown/MDX 存放在 Git 仓库，通过 Decap CMS 网页后台编辑，提交后 Cloudflare Pages 自动构建。':'CMS: Markdown/MDX in Git, edited via Decap CMS, auto-built by Cloudflare Pages.'}</p>
+</Base>

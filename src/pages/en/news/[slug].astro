@@ -1,0 +1,11 @@
+---
+import Base from '../../../layouts/Base.astro';
+import news from '../../../data/news.json';
+export function getStaticPaths(){ return news.map(n=>({ params:{ slug:n.slug }, props:{ n } })); }
+const { n } = Astro.props; const lang='en';
+---
+<Base title={n.title} lang={lang} description={n.description}>
+<p><a href={`/${lang}/news/`}>← {lang==='zh'?'资讯':'News'}</a></p>
+<h1>{n.title}</h1><p class="muted">{n.date}</p>
+{n.body.map(p=><p>{p}</p>)}
+</Base>
