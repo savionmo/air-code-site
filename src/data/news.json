@@ -1,0 +1,54 @@
+[
+ {
+  "slug": "what-is-iata-code",
+  "lang": "zh",
+  "title": "机场三字代码是什么？PEK、CAN 背后规则一次讲清",
+  "date": "2026-10-04",
+  "description": "科普 IATA 机场三字代码的由来、与 ICAO 四字码的区别，以及货代/出行查询时的用法。",
+  "body": [
+   "IATA 三字代码由国际航空运输协会分配，用 3 个英文字母标识机场或城市，例如 PEK 代表北京首都、CAN 代表广州白云。公众购票、行李牌、货运单上最常用它。",
+   "ICAO 四字代码则由国际民航组织分配，首字母代表地区，例如 ZBAA 是北京首都的 ICAO 代码，主要用于飞行计划与空管通信。查询时三字码看 IATA，四字码看 ICAO，两者不要混淆。",
+   "城市码与机场码也可能不同：BJS 是北京城市码，下辖 PEK 与 PKX 两个机场。做货代或行程规划时，务必核对到具体机场。"
+  ]
+ },
+ {
+  "slug": "iata-vs-icao-codes",
+  "lang": "en",
+  "title": "IATA vs ICAO Airport Codes: A Beginner Guide",
+  "date": "2026-10-04",
+  "description": "What IATA 3-letter codes and ICAO 4-letter codes mean, and when to use each in travel and air cargo.",
+  "body": [
+   "IATA assigns 3-letter codes used on tickets, baggage tags and air waybills — for example LHR for London Heathrow and JFK for New York JFK.",
+   "ICAO assigns 4-letter codes used in flight planning and ATC, such as EGLL for Heathrow. The first letters indicate region and country.",
+   "A city code may cover multiple airports. Always confirm the exact airport code before booking or shipping."
+  ]
+ },
+ {
+  "slug": "hangzhou-qingdao-vancouver-jd471-resumes",
+  "lang": "zh",
+  "title": "杭州—青岛—温哥华航线复航：首都航空 JD471 每周五执飞，杭州重通五大洲",
+  "date": "2026-10-02",
+  "description": "10月2日首都航空 JD471 从杭州经青岛飞往温哥华，时隔多年复航。航线每周五一班、空客 A330 执飞，涉及机场代码 HGH、TAO、YVR 与航司代码 JD/CBJ 一次讲清。",
+  "body": [
+   "10月2日9时07分，首都航空 JD471 航班从杭州萧山国际机场（HGH，ICAO：ZSHC）起飞，经停青岛胶东国际机场（TAO，ICAO：ZSQD），飞往温哥华国际机场（YVR，ICAO：CYVR）。这条洲际客运航线正式恢复运营，杭州机场客运航线由此重新实现对亚洲、欧洲、美洲、大洋洲、非洲五大洲的通达覆盖。",
+   "班期与机型：航线每周五执行一班，由空客 A330 宽体机执飞，设公务舱与经济舱。去程 JD471 计划杭州 08:55 起飞、青岛 12:20 起飞，温哥华当地时间 08:40 抵达；回程 JD472 计划温哥华当地时间 10:40 起飞，次日抵达青岛后再飞杭州。具体时刻以航司与机场当日公布为准。",
+   "这条航线 2016 年首航，是首都航空的首条北美航线，多年服务华东地区赴加留学、探亲、商务与旅游旅客。此次复航延续“杭州始发、青岛经停”的布局，也是山东省内唯一直飞北美大陆的洲际客运航线，浙江、山东旅客赴北美西海岸不再必须经北京、上海等地中转。",
+   "查询小贴士：首都航空的 IATA 二字码是 JD，ICAO 三字码是 CBJ，呼号 CAPITAL JET。订票与查航班时认准 JD471/JD472；机场代码则分别是杭州 HGH、青岛 TAO、温哥华 YVR，不要把城市与具体机场混淆。",
+   "资料来源：中国民航网/《中国民航报》2026年10月2日报道、京报网2026年10月2日报道；航班时刻为计划时刻，出行前请以首都航空官网与机场信息为准。"
+  ]
+ },
+ {
+  "slug": "hangzhou-qingdao-vancouver-jd471-resumes-en",
+  "lang": "en",
+  "title": "Hangzhou–Qingdao–Vancouver Route Resumes: Capital Airlines JD471, Fridays on A330",
+  "date": "2026-10-02",
+  "description": "Capital Airlines flight JD471 resumed Hangzhou (HGH) via Qingdao (TAO) to Vancouver (YVR) on Oct 2 — weekly Friday A330 service. Airport codes HGH/TAO/YVR and airline codes JD/CBJ explained.",
+  "body": [
+   "On October 2 at 09:07, Capital Airlines flight JD471 departed Hangzhou Xiaoshan International Airport (HGH, ICAO: ZSHC), stopped in Qingdao Jiaodong International Airport (TAO, ICAO: ZSQD), and continued to Vancouver International Airport (YVR, ICAO: CYVR). The resumed intercontinental service restores Hangzhou Airport's passenger network across Asia, Europe, the Americas, Oceania and Africa.",
+   "Schedule and aircraft: the route operates once a week on Fridays with an Airbus A330 in business and economy cabins. JD471 is scheduled to depart Hangzhou at 08:55 and Qingdao at 12:20, arriving in Vancouver at 08:40 local time; the return JD472 is scheduled to leave Vancouver at 10:40 local time and reach Hangzhou via Qingdao the next day. Always confirm same-day times with the airline and airports.",
+   "First launched in 2016 as Capital Airlines' first North American route, the service historically carried large numbers of students, family visitors, business and leisure travellers between eastern China and Canada. The resumption keeps the Hangzhou-origin, Qingdao-stop pattern and is Shandong's only direct passenger service to mainland North America.",
+   "Code lookup: Capital Airlines uses IATA code JD, ICAO code CBJ and callsign CAPITAL JET. The airports are HGH (Hangzhou), TAO (Qingdao) and YVR (Vancouver) — check the exact airport code, not just the city, before booking or shipping.",
+   "Sources: China Civil Aviation News / CAAC News reports dated October 2, 2026, and Beijing Daily's news portal (October 2, 2026). Times shown are scheduled times; verify before travel."
+  ]
+ }
+]
