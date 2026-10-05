@@ -3,16 +3,30 @@ import Base from '../../../layouts/Base.astro';
 import airlines from '../../../data/airlines';
 export function getStaticPaths(){ return airlines.map(a=>({ params:{ iata:a.iata.toLowerCase() }, props:{ a } })); }
 const { a } = Astro.props; const lang='en';
+const t=(zh,en)=>lang==='zh'?zh:en;
+const name = lang==='zh' ? (a.name_zh||a.name_en) : a.name_en;
+const sameCountry = airlines.filter(x=>x.country_en===a.country_en && x.iata!==a.iata).slice(0,8);
 ---
-<Base title={`${a.iata} ${a.name_en}`} lang={lang}>
-<p><a href={`/${lang}/airline/`}>← {lang==='zh'?'航空公司列表':'Airlines'}</a></p>
-<h1>{a.iata} · {lang==='zh'&&a.name_zh?a.name_zh:a.name_en}</h1>
-<div class="card"><table>
-<tr><th>IATA</th><td>{a.iata}</td></tr>
-<tr><th>ICAO</th><td>{a.icao||'-'}</td></tr>
-<tr><th>{lang==='zh'?'呼号':'Callsign'}</th><td>{a.callsign||'-'}</td></tr>
-<tr><th>{lang==='zh'?'国家':'Country'}</th><td>{a.country_en}</td></tr>
-<tr><th>{lang==='zh'?'联盟':'Alliance'}</th><td>{lang==='zh'?'（数据待补充：星空/天合/寰宇）':'(to be added: Star / SkyTeam / oneworld)'}</td></tr>
-<tr><th>{lang==='zh'?'常用机型':'Fleet (planned)'}</th><td><a href={`/${lang}/aircraft/`}>{lang==='zh'?'查看机型板块占位':'See aircraft section'}</a> {lang==='zh'?'（后续关联该航司机队机型与 LOPA）':'(fleet + LOPA to be linked)'}</td></tr>
-</table></div>
+<Base title={`${a.iata} ${name}`} lang={lang} description={`${a.iata} / ${a.icao} ${t('航空公司代码查询','airline code lookup')}`}>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/airline/`}>{t('航空公司','Airlines')}</a><span class="sep">›</span>{a.iata}</div>
+<section class="dhero">
+<span class="big">{a.iata}</span>
+<div><h1>{name}</h1><p>{a.country_en} · ICAO {a.icao||'-'}</p></div>
+</section>
+<div class="kv">
+<div class="kvr"><span class="k">IATA</span><b>{a.iata}</b></div>
+<div class="kvr"><span class="k">ICAO</span><b>{a.icao||'-'}</b></div>
+<div class="kvr"><span class="k">{t('呼号','Callsign')}</span>{a.callsign||'-'}</div>
+<div class="kvr"><span class="k">{t('国家','Country')}</span>{a.country_en}</div>
+<div class="kvr"><span class="k">{t('联盟','Alliance')}</span><span class="muted">{t('待补充（星空 / 天合 / 寰宇）','To be added (Star / SkyTeam / oneworld)')}</span></div>
+<div class="kvr"><span class="k">{t('机队机型','Fleet')}</span><a href={`/${lang}/aircraft/`}>{t('查看机型板块','Browse aircraft types')}</a><span class="muted"> {t('（后续关联该航司机队与 LOPA）','(fleet + LOPA to be linked)')}</span></div>
+</div>
+{sameCountry.length>0 && (
+<div><div class="sec-head"><h2>{t('同国家其他航司','More airlines in '+a.country_en)}</h2><a class="more" href={`/${lang}/airline/`}>{t('全部航司 →','All airlines →')}</a></div>
+<div class="rows">
+{sameCountry.map(x=>(
+<a class="row" href={`/${lang}/airline/${x.iata.toLowerCase()}/`}><span class="code sm">{x.iata}</span><span class="tt"><b>{lang==='zh'?(x.name_zh||x.name_en):x.name_en}</b><span>ICAO {x.icao||'-'}</span></span><span class="go">›</span></a>
+))}
+</div></div>
+)}
 </Base>

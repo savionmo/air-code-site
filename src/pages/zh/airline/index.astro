@@ -2,12 +2,22 @@
 import Base from '../../../layouts/Base.astro';
 import airlines from '../../../data/airlines';
 const lang='zh';
-const byLetter={}; for(const a of airlines){ const L=a.iata[0]; (byLetter[L] ||= []).push(a); }
+const t=(zh,en)=>lang==='zh'?zh:en;
+const byLetter={}; for(const a of airlines){ const L=(a.iata||'?')[0]; (byLetter[L] ||= []).push(a); }
 const letters=Object.keys(byLetter).sort();
+const aname=a=>lang==='zh'?(a.name_zh||a.name_en):a.name_en;
 ---
-<Base title={lang==='zh'?'航空公司代码 A-Z':'Airline Codes A-Z'} lang={lang}>
-<h1>{lang==='zh'?'航空公司二字码':'Airline Codes'}</h1>
-<p class="muted">{airlines.length} {lang==='zh'?'家在营航空公司（OpenFlights active）':'active airlines (OpenFlights)'}</p>
-<div>{letters.map(L=><a class="chip" href={`#${L}`}>{L}</a>)}</div>
-{letters.map(L=><section id={L}><h3>{L}</h3><div class="grid">{byLetter[L].map(a=><a class="card" href={`/${lang}/airline/${a.iata.toLowerCase()}/`}><b>{a.iata}</b> · {a.icao}<br/>{lang==='zh'&&a.name_zh?a.name_zh:a.name_en}<br/><span class="muted">{a.country_en}</span></a>)}</div></section>)}
+<Base title={t('航空公司代码 A-Z','Airline Codes A-Z')} lang={lang}>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span>{t('航空公司','Airlines')}</div>
+<div class="phead"><h1>{t('航空公司二字码','Airline Codes')}</h1><p>{airlines.length} {t('家在营航空公司（OpenFlights）','active airlines (OpenFlights)')}</p></div>
+<div class="az">{letters.map(L=><a href={`#${L}`}>{L}</a>)}</div>
+{letters.map(L=>(
+<section id={L}>
+<div class="letter-h"><span class="L">{L}</span><span class="cnt">{byLetter[L].length} {t('家航司','airlines')}</span></div>
+<div class="rows">
+{byLetter[L].map(a=>(
+<a class="row" href={`/${lang}/airline/${a.iata.toLowerCase()}/`}><span class="code">{a.iata}</span><span class="tt"><b>{aname(a)}</b><span>ICAO {a.icao||'-'} · {a.country_en}</span></span><span class="go">›</span></a>
+))}
+</div>
+</section>))}
 </Base>

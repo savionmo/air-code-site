@@ -3,9 +3,22 @@ import Base from '../../../layouts/Base.astro';
 import news from '../../../data/news.json';
 export function getStaticPaths(){ return news.map(n=>({ params:{ slug:n.slug }, props:{ n } })); }
 const { n } = Astro.props; const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
+const related = news.filter(x=>x.lang===n.lang && x.slug!==n.slug).slice(0,5);
 ---
 <Base title={n.title} lang={lang} description={n.description}>
-<p><a href={`/${lang}/news/`}>← {lang==='zh'?'资讯':'News'}</a></p>
-<h1>{n.title}</h1><p class="muted">{n.date}</p>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/news/`}>{t('资讯','News')}</a><span class="sep">›</span>{t('正文','Article')}</div>
+<article class="article">
+<h1>{n.title}</h1>
+<p class="meta">{n.date}</p>
 {n.body.map(p=><p>{p}</p>)}
+</article>
+{related.length>0 && (
+<div><div class="sec-head"><h2>{t('相关资讯','Related')}</h2><a class="more" href={`/${lang}/news/`}>{t('全部资讯 →','All news →')}</a></div>
+<div class="rows">
+{related.map(r=>{ const [y,m,d]=r.date.split('-'); return (
+<a class="newsrow" href={`/${lang}/news/${r.slug}/`}><span class="datebox"><b>{d}</b><span>{y}-{m}</span></span><span class="tt"><b>{r.title}</b><p>{r.description}</p></span><span class="go">›</span></a>
+)})}
+</div></div>
+)}
 </Base>

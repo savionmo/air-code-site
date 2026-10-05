@@ -3,20 +3,34 @@ import Base from '../../../layouts/Base.astro';
 import airports from '../../../data/airports';
 export function getStaticPaths(){ return airports.map(a=>({ params:{ iata:a.iata.toLowerCase() }, props:{ a } })); }
 const { a } = Astro.props; const lang='zh';
-const title = `${a.iata} ${lang==='zh'&&a.name_zh?a.name_zh:a.name_en}`;
+const t=(zh,en)=>lang==='zh'?zh:en;
+const name = lang==='zh' ? (a.name_zh||a.name_en) : a.name_en;
+const city = lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
+const sameCountry = airports.filter(x=>x.country_code===a.country_code && x.iata!==a.iata).slice(0,8);
 ---
-<Base title={title} lang={lang} description={`${a.iata} / ${a.icao} airport code lookup`}>
-<p><a href={`/${lang}/airport/`}>← {lang==='zh'?'机场列表':'Airports'}</a></p>
-<h1>{a.iata} · {lang==='zh'&&a.name_zh?a.name_zh:a.name_en}</h1>
-<div class="card"><table>
-<tr><th>IATA</th><td>{a.iata}</td></tr>
-<tr><th>ICAO</th><td>{a.icao}</td></tr>
-<tr><th>{lang==='zh'?'英文名':'Name (EN)'}</th><td>{a.name_en}</td></tr>
-<tr><th>{lang==='zh'?'中文名':'Name (ZH)'}</th><td>{a.name_zh || (lang==='zh'?'（暂无中文名，保留英文）':'(Chinese name to be added)')} </td></tr>
-<tr><th>{lang==='zh'?'城市':'City'}</th><td>{lang==='zh'&&a.city_zh?a.city_zh+' / ':''}{a.city_en}</td></tr>
-<tr><th>{lang==='zh'?'国家':'Country'}</th><td>{a.country_en} ({a.country_code})</td></tr>
-<tr><th>{lang==='zh'?'经纬度':'Coordinates'}</th><td>{a.lat}, {a.lon}</td></tr>
-<tr><th>Type</th><td>{a.type}</td></tr>
-</table></div>
-<p class="muted">{lang==='zh'?'地图与跑道/航站楼等扩展字段后续接入 OurAirports runways 数据。':'Map, runways and terminals to be added from OurAirports runways data.'}</p>
+<Base title={`${a.iata} ${name}`} lang={lang} description={`${a.iata} / ${a.icao} ${t('机场三字代码查询','airport code lookup')}`}>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/airport/`}>{t('机场三字码','Airports')}</a><span class="sep">›</span>{a.iata}</div>
+<section class="dhero">
+<span class="big">{a.iata}</span>
+<div><h1>{name}</h1><p>{city} · {a.country_en} · ICAO {a.icao}</p></div>
+</section>
+<div class="kv">
+<div class="kvr"><span class="k">IATA</span><b>{a.iata}</b></div>
+<div class="kvr"><span class="k">ICAO</span><b>{a.icao}</b></div>
+<div class="kvr"><span class="k">{t('英文名','Name (EN)')}</span>{a.name_en}</div>
+<div class="kvr"><span class="k">{t('中文名','Name (ZH)')}</span>{a.name_zh || t('暂无中文名，保留英文','To be added')}</div>
+<div class="kvr"><span class="k">{t('城市','City')}</span>{city}{lang==='zh'&&a.city_zh&&a.city_en!==a.city_zh?` / ${a.city_en}`:''}</div>
+<div class="kvr"><span class="k">{t('国家','Country')}</span>{a.country_en} ({a.country_code})</div>
+<div class="kvr"><span class="k">{t('经纬度','Coordinates')}</span>{a.lat}, {a.lon}</div>
+<div class="kvr"><span class="k">{t('类型','Type')}</span>{a.type}</div>
+</div>
+{sameCountry.length>0 && (
+<div><div class="sec-head"><h2>{t('同国家其他机场','More in '+a.country_en)}</h2><a class="more" href={`/${lang}/airport/`}>{t('全部机场 →','All airports →')}</a></div>
+<div class="rows">
+{sameCountry.map(x=>(
+<a class="row" href={`/${lang}/airport/${x.iata.toLowerCase()}/`}><span class="code sm">{x.iata}</span><span class="tt"><b>{lang==='zh'?(x.name_zh||x.name_en):x.name_en}</b><span>{lang==='zh'?(x.city_zh||x.city_en):x.city_en}</span></span><span class="go">›</span></a>
+))}
+</div></div>
+)}
+<p class="muted" style="font-size:13px;margin-top:16px">{t('跑道、航站楼等扩展字段后续接入 OurAirports runways 数据。','Runways and terminals to be added from OurAirports runways data.')}</p>
 </Base>

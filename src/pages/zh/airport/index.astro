@@ -2,16 +2,31 @@
 import Base from '../../../layouts/Base.astro';
 import airports from '../../../data/airports';
 const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
 const byLetter={}; const byCountry={};
 for(const a of airports){ const L=a.iata[0]; (byLetter[L] ||= []).push(a); const c=a.country_en||a.country_code; (byCountry[c] ||= []).push(a); }
 const letters=Object.keys(byLetter).sort(); const countries=Object.keys(byCountry).sort();
+const aname=a=>lang==='zh'?(a.name_zh||a.name_en):a.name_en;
+const acity=a=>lang==='zh'?(a.city_zh||a.city_en):a.city_en;
 ---
-<Base title={lang==='zh'?'机场三字代码 A-Z 索引':'Airport Codes A-Z'} lang={lang}>
-<h1>{lang==='zh'?'机场三字代码':'Airport IATA Codes'}</h1>
-<p class="muted">{airports.length} {lang==='zh'?'条样本数据（全量 9051 条待导入）':'sample records (9,051 total to import)'}</p>
-<h2>A-Z</h2>
-<div>{letters.map(L=><a class="chip" href={`#${L}`}>{L}</a>)}</div>
-{letters.map(L=><section id={L}><h3>{L}</h3><div class="grid">{byLetter[L].map(a=><a class="card" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><b>{a.iata}</b> · {a.icao}<br/>{lang==='zh'&&a.name_zh?a.name_zh:a.name_en}<br/><span class="muted">{a.city_en} · {a.country_en}</span></a>)}</div></section>)}
-<h2>{lang==='zh'?'按国家':'By Country'}</h2>
-{countries.map(c=><details class="card"><summary>{c} ({byCountry[c].length})</summary><p>{byCountry[c].map(a=><a href={`/${lang}/airport/${a.iata.toLowerCase()}/`}>{a.iata} {a.city_en}</a>).reduce((acc,el,i,arr)=>i===0?[el]:[...acc,' · ',el],[])}</p></details>)}
+<Base title={t('机场三字代码 A-Z 索引','Airport Codes A-Z')} lang={lang}>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span>{t('机场三字码','Airports')}</div>
+<div class="phead"><h1>{t('机场三字代码','Airport IATA Codes')}</h1><p>{airports.length} {t('条样本数据 · 全量 9,051 条待导入','sample records · 9,051 total to import')}</p></div>
+<div class="az">{letters.map(L=><a href={`#${L}`}>{L}</a>)}</div>
+{letters.map(L=>(
+<section id={L}>
+<div class="letter-h"><span class="L">{L}</span><span class="cnt">{byLetter[L].length} {t('个机场','airports')}</span></div>
+<div class="rows">
+{byLetter[L].map(a=>(
+<a class="row" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><span class="code">{a.iata}</span><span class="tt"><b>{aname(a)}</b><span>{acity(a)} · {a.country_en} · ICAO {a.icao}</span></span><span class="go">›</span></a>
+))}
+</div>
+</section>))}
+<div class="sec-head"><h2>{t('按国家','By Country')}</h2></div>
+<div class="rows">
+{countries.map(c=>(
+<details class="fold"><summary><b>{c}</b><span class="cnt">{byCountry[c].length}</span></summary>
+<div class="fold-body">{byCountry[c].map(a=><a class="minichip" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}>{a.iata}</a>)}</div>
+</details>))}
+</div>
 </Base>

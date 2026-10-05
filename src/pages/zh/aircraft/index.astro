@@ -2,18 +2,25 @@
 import Base from '../../../layouts/Base.astro';
 import planes from '../../../data/planes.json';
 const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
 const common=['738','73H','320','321','330','359','77W','789','388','E90'];
 const list=planes.filter(p=>common.includes(p.iata));
 ---
-<Base title={lang==='zh'?'飞机机型（规划）':'Aircraft Types (Planned)'} lang={lang}>
-<h1>{lang==='zh'?'飞机机型板块（占位）':'Aircraft Types — Coming Soon'}</h1>
-<p>{lang==='zh'?'本板块后期按航空公司+机型展示公开资料：客舱布局 LOPA、货舱布局、ULD 集装器分配。不编造座位图，先定义数据结构，待逐家航司核对公开手册后上线。':'Per-airline aircraft pages will show public LOPA, cargo hold layout and ULD allocation. No invented seat maps — schema first, verified airline sources later.'}</p>
-<div class="grid">{list.map(p=><div class="card"><b>{p.iata}</b> · {p.icao}<br/>{p.name_en}</div>)}</div>
-<div class="card"><h2>{lang==='zh'?'后续字段设计':'Planned Schema'}</h2><table>
-<tr><th>airline_iata / aircraft_iata</th><td>e.g. CA + 77W</td></tr>
-<tr><th>LOPA</th><td>cabins[], seat_map_url (public source), total_seats, pitch/width by cabin</td></tr>
-<tr><th>Cargo</th><td>forward/aft/bulk hold volume, max weight, door size</td></tr>
-<tr><th>ULD</th><td>positions[], PMC/PAG, LD3/LD8 allocation, contour limits</td></tr>
-<tr><th>Source</th><td>source_url, source_type (airline cargo manual / fleet page), verified_at</td></tr>
-</table></div>
+<Base title={t('飞机机型（规划）','Aircraft Types (Planned)')} lang={lang}>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span>{t('飞机机型','Aircraft')}</div>
+<div class="phead"><h1>{t('飞机机型','Aircraft Types')} <span class="badge">{t('板块建设中','In progress')}</span></h1><p>{t('本板块后期按航空公司 + 机型展示公开资料：客舱布局 LOPA、货舱布局、ULD 集装器分配。不编造座位图，先定义数据结构，待逐家航司核对公开手册后上线。','Per-airline aircraft pages will show public LOPA, cargo hold layout and ULD allocation. No invented seat maps — schema first, verified airline sources later.')}</p></div>
+<div class="sec-head"><h2>{t('常见机型代码','Common type codes')}</h2></div>
+<div class="rows">
+{list.map(p=>(
+<div class="row"><span class="code sm">{p.iata}</span><span class="tt"><b>{p.name_en}</b><span>ICAO {p.icao}</span></span></div>
+))}
+</div>
+<div class="sec-head"><h2>{t('后续字段设计','Planned schema')}</h2></div>
+<div class="kv">
+<div class="kvr"><span class="k">airline + type</span>e.g. CA + 77W</div>
+<div class="kvr"><span class="k">LOPA</span><span class="muted">cabins[], seat_map_url ({t('公开来源','public source')}), total_seats, pitch/width by cabin</span></div>
+<div class="kvr"><span class="k">Cargo</span><span class="muted">forward / aft / bulk hold volume, max weight, door size</span></div>
+<div class="kvr"><span class="k">ULD</span><span class="muted">positions[], PMC/PAG, LD3/LD8 allocation, contour limits</span></div>
+<div class="kvr"><span class="k">Source</span><span class="muted">source_url, source_type ({t('航司货运手册 / 机队页','airline cargo manual / fleet page')}), verified_at</span></div>
+</div>
 </Base>

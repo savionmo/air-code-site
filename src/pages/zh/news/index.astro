@@ -2,11 +2,16 @@
 import Base from '../../../layouts/Base.astro';
 import news from '../../../data/news.json';
 const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
 const list = news.filter(n=>n.lang===lang);
-const fallback = news;
+const items = list.length?list:news;
 ---
-<Base title={lang==='zh'?'资讯':'News'} lang={lang}>
-<h1>{lang==='zh'?'资讯文章':'News & Guides'}</h1>
-{(list.length?list:fallback).map(n=><article class="card"><h2><a href={`/${lang}/news/${n.slug}/`}>{n.title}</a></h2><p class="muted">{n.date}</p><p>{n.description}</p></article>)}
-<p class="muted">{lang==='zh'?'后台：文章以 Markdown/MDX 存放在 Git 仓库，通过 Decap CMS 网页后台编辑，提交后 Cloudflare Pages 自动构建。':'CMS: Markdown/MDX in Git, edited via Decap CMS, auto-built by Cloudflare Pages.'}</p>
+<Base title={t('资讯','News')} lang={lang} description={t('机场代码科普、航线动态与行业资讯。','Airport code guides, route news and industry updates.')}>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span>{t('资讯','News')}</div>
+<div class="phead"><h1>{t('资讯文章','News & Guides')}</h1><p>{t('机场代码科普 · 航线动态 · 行业资讯','Code guides · route news · industry updates')}</p></div>
+<div class="rows">
+{items.map(n=>{ const [y,m,d]=n.date.split('-'); return (
+<a class="newsrow" href={`/${lang}/news/${n.slug}/`}><span class="datebox"><b>{d}</b><span>{y}-{m}</span></span><span class="tt"><b>{n.title}</b><p>{n.description}</p></span><span class="go">›</span></a>
+)})}
+</div>
 </Base>
