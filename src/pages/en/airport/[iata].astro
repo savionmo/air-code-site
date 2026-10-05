@@ -7,6 +7,8 @@ const t=(zh,en)=>lang==='zh'?zh:en;
 const name = lang==='zh' ? (a.name_zh||a.name_en) : a.name_en;
 const city = lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
 const sameCountry = airports.filter(x=>x.country_code===a.country_code && x.iata!==a.iata).slice(0,8);
+const mapSrc=`https://www.openstreetmap.org/export/embed.html?bbox=${a.lon-0.35},${a.lat-0.22},${a.lon+0.35},${a.lat+0.22}&layer=mapnik&marker=${a.lat},${a.lon}`;
+const mapLink=`https://www.openstreetmap.org/?mlat=${a.lat}&mlon=${a.lon}#map=12/${a.lat}/${a.lon}`;
 ---
 <Base title={`${a.iata} ${name}`} lang={lang} description={`${a.iata} / ${a.icao} ${t('机场三字代码查询','airport code lookup')}`}>
 <div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/airport/`}>{t('机场三字码','Airports')}</a><span class="sep">›</span>{a.iata}</div>
@@ -24,6 +26,8 @@ const sameCountry = airports.filter(x=>x.country_code===a.country_code && x.iata
 <div class="kvr"><span class="k">{t('经纬度','Coordinates')}</span>{a.lat}, {a.lon}</div>
 <div class="kvr"><span class="k">{t('类型','Type')}</span>{a.type}</div>
 </div>
+<div class="sec-head"><h2>{t('位置地图','Map')}</h2><a class="more" href={mapLink} target="_blank" rel="noopener">{t('查看大图 →','Open larger map →')}</a></div>
+<div class="card" style="margin:0;padding:8px"><iframe title={t('机场位置地图','Airport map')} src={mapSrc} style="width:100%;height:320px;border:0;border-radius:10px;display:block" loading="lazy"></iframe></div>
 {sameCountry.length>0 && (
 <div><div class="sec-head"><h2>{t('同国家其他机场','More in '+a.country_en)}</h2><a class="more" href={`/${lang}/airport/`}>{t('全部机场 →','All airports →')}</a></div>
 <div class="rows">
