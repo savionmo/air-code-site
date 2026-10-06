@@ -89,6 +89,17 @@ for (let i = 1; i < rows.length; i++) {
 }
 
 const order = { large_airport: 0, medium_airport: 1, small_airport: 2 };
+// merge hand-curated extras (real airports missing from OurAirports, e.g. FRU)
+try {
+  const extras = JSON.parse(readFileSync(new URL('src/data/airports-extra.json', root), 'utf-8'));
+  for (const e of extras) {
+    if (!e.iata || seen.has(e.iata)) continue;
+    let tz = e.tz || null;
+    if (!tz) { try { tz = tzlookup(e.lat, e.lon); } catch {} }
+    seen.set(e.iata, { ...e, tz });
+  }
+  console.log('extras merged:', extras.length);
+} catch {}
 const all = [...seen.values()].map(({ _s, ...o }) => o)
   .sort((a, b) => (order[a.type] - order[b.type]) || (a.iata < b.iata ? -1 : 1));
 
