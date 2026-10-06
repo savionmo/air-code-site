@@ -1,0 +1,39 @@
+---
+/* 原创等轴测集装器示意图: 按 dims_cm 真实比例绘制, 数据标注与 JSON 一致 */
+interface Props { code:string; aka?:string; dims:number[]; door?:number[]|null; compact?:boolean; }
+const { code, aka='', dims, door=null, compact=false } = Astro.props;
+const L=dims[0], W=dims[1], Hh=dims[2]||14;
+const hasH=dims.length>=3;
+const s=Math.min(260/(L+W*0.87), 190/(Hh+W*0.5));
+const lw=L*s, lh=Hh*s, ww=W*s;
+const dx=ww*0.866, dy=ww*0.5;
+const x0=70, y0=250;
+const Ax=x0, Ay=y0, Bx=x0+lw, By=y0, Cx=x0+lw, Cy=y0-lh, Dx=x0, Dy=y0-lh;
+const Ex=x0+dx, Ey=y0-dy, Fx=x0+lw+dx, Fy=y0-dy, Gx=x0+lw+dx, Gy=y0-lh-dy, Hx=x0+dx, Hy=y0-lh-dy;
+const minX=Math.min(Ax,Dx,Ex,Hx)-58, maxX=Math.max(Bx,Cx,Fx,Gx)+28;
+const minY=Math.min(Cy,Dy,Gy,Hy)-(compact?30:40), maxY=Math.max(Ay,By,Ey,Fy)+(compact?14:34);
+const vbW=maxX-minX, vbH=maxY-minY;
+const title=aka?`${code} (${aka})`:code;
+let doorR=null;
+if(door&&door.length>=2&&door[0]>0&&door[1]>0){
+  const dw=Math.min(door[0],L)*s, dh=Math.min(door[1],Hh)*s;
+  doorR={x:x0+(lw-dw)/2, y:y0-dh, w:dw, h:dh};
+}
+const fs=compact?12:13.5;
+const dimColor="#3A4A5C";
+---
+<svg viewBox={`${minX} ${minY} ${vbW} ${vbH}`} role="img" aria-label={title} style="width:100%;height:auto;display:block">
+<text x={(minX+maxX)/2} y={minY+(compact?20:26)} text-anchor="middle" font-size={compact?15:21} font-weight="800" fill="#0A46A8">{title}</text>
+<polygon points={`${Dx},${Dy} ${Cx},${Cy} ${Gx},${Gy} ${Hx},${Hy}`} fill="#EAF3FF" stroke="#1F8BF7" stroke-width="1.6"/>
+<polygon points={`${Bx},${By} ${Cx},${Cy} ${Gx},${Gy} ${Fx},${Fy}`} fill="#C9E0FF" stroke="#1F8BF7" stroke-width="1.6"/>
+<polygon points={`${Ax},${Ay} ${Bx},${By} ${Cx},${Cy} ${Dx},${Dy}`} fill="#DCEBFF" stroke="#1F8BF7" stroke-width="1.6"/>
+{doorR && <rect x={doorR.x} y={doorR.y} width={doorR.w} height={doorR.h} fill="none" stroke="#0A46A8" stroke-width="1.6" stroke-dasharray="7 5"/>}
+{!compact && (
+<g>
+<line x1={Ax} y1={y0+9} x2={Bx} y2={y0+9} stroke="#8A9BAE" stroke-width="1"/>
+<text x={(Ax+Bx)/2} y={y0+26} text-anchor="middle" font-size={fs} fill={dimColor}>{L} cm</text>
+<line x1={x0-9} y1={Ay} x2={x0-9} y2={Dy} stroke="#8A9BAE" stroke-width="1"/>
+<text x={x0-14} y={(Ay+Dy)/2+4} text-anchor="end" font-size={fs} fill={dimColor}>{hasH?`${Hh} cm`:''}</text>
+<text x={(Bx+Fx)/2+12} y={(By+Fy)/2} text-anchor="middle" font-size={fs} fill={dimColor}>{W} cm</text>
+</g>)}
+</svg>

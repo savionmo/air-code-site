@@ -2,6 +2,7 @@
 import Base from '../../../../../layouts/Base.astro';
 import fleet from '../../../../../data/cargo-fleet.json';
 import ulds from '../../../../../data/ulds.json';
+import UldDiagram from '../../../../../components/UldDiagram.astro';
 export function getStaticPaths(){
   const paths=[];
   for(const f of fleet){
@@ -17,8 +18,6 @@ const aname=lang==='zh'?f.airline_zh:f.airline_en;
 const catZh={container:t('集装箱','Container'),pallet:t('集装板','Pallet'),special:t('特殊集装器','Special ULD')};
 const dims=u.dims_cm.join(' × ')+' cm';
 const tare=Array.isArray(u.tare_kg)?u.tare_kg.join(' ~ ')+' kg':u.tare_kg+' kg';
-const [L,W,H]=u.dims_cm; const sx=340/Math.max(L,W);
-const bw=(W*sx).toFixed(0), bl=(L*sx).toFixed(0);
 const alb=f.airline.toLowerCase();
 ---
 <Base title={`${u.code} ${t('集装器规格','ULD Specs')} | ${aname}`} lang={lang} description={`${aname} ${u.code}${t('集装器规格','ULD specs')}`}>
@@ -52,13 +51,7 @@ const alb=f.airline.toLowerCase();
 <section class="uhero"><span class="ucode">{u.code}</span><div><h1>{catZh[u.cat]}{u.aka?` (${u.aka})`:''}</h1><p class="sub">{aname} · {lang==='zh'?u.desc_zh:u.desc_en}</p></div></section>
 
 <div class="sec-head"><h2><span class="bar"></span>{t('外形示意','Dimensions')}</h2></div>
-<div class="card"><div class="dimbox">
-<svg viewBox={`0 0 ${+bw+90} ${+bl+40}`} role="img" aria-label="dimensions">
-<rect x="45" y="20" width={bw} height={bl} rx="4"/>
-<text x="45" y="12">{u.dims_cm[0]} cm</text>
-<text x={+bw+52} y={+20+(+bl)/2}>{u.dims_cm[1]} cm</text>
-{u.dims_cm[2] && (<text x="45" y={+20+(+bl)+24}>{t('高','H')} {u.dims_cm[2]} cm</text>)}
-</svg></div></div>
+<div class="card"><UldDiagram code={u.code} aka={u.aka||""} dims={u.dims_cm} door={u.door_cm||null} /></div>
 
 <div class="sec-head"><h2><span class="bar"></span>{t('规格','Specifications')}</h2></div>
 <div class="kv">

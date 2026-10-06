@@ -2,6 +2,7 @@
 import Base from '../../../../../layouts/Base.astro';
 import fleet from '../../../../../data/cargo-fleet.json';
 import ulds from '../../../../../data/ulds.json';
+import UldDiagram from '../../../../../components/UldDiagram.astro';
 export function getStaticPaths(){ return fleet.map(f=>({ params:{ airline:f.airline.toLowerCase() }, props:{ f } })); }
 const { f } = Astro.props; const lang='en';
 const t=(zh,en)=>lang==='zh'?zh:en;
@@ -21,6 +22,7 @@ const cats=[['container',t('集装箱','Containers')],['pallet',t('集装板','P
 :global(.uldgrid){display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 :global(.ucard){background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
 :global(a.ucard:hover){border-color:var(--fb);text-decoration:none}
+:global(.ucard .thumb){background:#F4F8FF;border-radius:10px;padding:6px;margin-bottom:10px}
 :global(.ucard .code){font-size:20px;font-weight:800;color:var(--fb)}
 :global(.ucard .nm){font-size:13.5px;font-weight:600;margin:4px 0 8px}
 :global(.ucard .sp){font-size:12.5px;color:var(--muted);line-height:1.7}
@@ -36,6 +38,7 @@ const cats=[['container',t('集装箱','Containers')],['pallet',t('集装板','P
 <div id={k}><div class="sec-head"><h2>{label}</h2></div>
 <div class="uldgrid">{items.map(u=>(
 <a class="ucard" href={`/${lang}/cargo/${f.airline.toLowerCase()}/uld/${u.code.toLowerCase()}/`}>
+<div class="thumb"><UldDiagram code={u.code} aka="" dims={u.dims_cm} door={null} compact={true} /></div>
 <div class="code">{u.code}</div><div class="nm">{u.aka?u.aka+' · ':''}{lang==='zh'?u.desc_zh:u.desc_en}</div>
 <div class="sp">{u.dims_cm.join(' × ')} cm<br/>{t('自重','Tare')} {Array.isArray(u.tare_kg)?u.tare_kg.join('~'):u.tare_kg} kg</div>
 </a>))}</div></div>);})}
