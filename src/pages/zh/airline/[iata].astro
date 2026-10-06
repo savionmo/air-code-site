@@ -12,6 +12,7 @@ const sameCountry = airlines.filter(x=>x.country_en===a.country_en && x.iata!==a
 <section class="dhero">
 <span class="big">{a.iata}</span>
 <div><h1>{name}</h1><p>{a.country_en} · ICAO {a.icao||'-'}</p></div>
+{a.icao && <img class="alogo" src={`https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${a.icao.toUpperCase()}.png`} alt="" loading="lazy" onerror="this.style.display='none'" />}
 </section>
 <div class="kv">
 <div class="kvr"><span class="k">IATA</span><b>{a.iata}</b></div>

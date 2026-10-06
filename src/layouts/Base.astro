@@ -108,6 +108,7 @@ a.newsrow:hover .tt b{color:var(--fb)}
 .dhero .big{font-size:54px;font-weight:900;letter-spacing:4px;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.45);padding:10px 20px;border-radius:15px;line-height:1.1}
 .dhero h1{margin:0 0 5px;font-size:22px}
 .dhero p{margin:0;opacity:.92;font-size:14px}
+.dhero .alogo{margin-left:auto;flex:none;height:60px;max-width:170px;object-fit:contain;background:rgba(255,255,255,.94);border-radius:12px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 /* ===== key-value card ===== */
 .kv{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.06)}
 .kvr{display:flex;gap:12px;padding:12px 17px;border-bottom:1px solid #F0F2F5;font-size:14.5px;align-items:baseline}
@@ -124,10 +125,10 @@ a.acard:hover{border-color:var(--fb);box-shadow:0 3px 10px rgba(24,119,242,.18);
 /* 热门机场：桌面一行5个，手机一行2个 */
 .flagrow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
 .flagcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.06);min-width:0}
-.flagcard .sflag{display:block;width:100%;height:96px;object-fit:cover;background:#eef1f5}
+.flagcard .sflag{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#eef1f5}
 .flagcard .fcode{position:absolute;right:8px;bottom:8px;background:#1877F2;color:#fff;font-weight:800;font-size:13px;letter-spacing:1px;padding:4px 10px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 a.flagcard:hover{border-color:var(--fb);box-shadow:0 3px 10px rgba(24,119,242,.18);text-decoration:none}
-@media(max-width:600px){.flagrow{grid-template-columns:repeat(2,1fr);gap:10px}.flagcard .sflag{height:84px}}
+@media(max-width:600px){.flagrow{grid-template-columns:repeat(2,1fr);gap:10px}}
 /* 热门航司：任何宽度都是一行2个 */
 .hot2{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
 .hot2 .row{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:0 1px 3px rgba(16,24,40,.06);min-width:0}
