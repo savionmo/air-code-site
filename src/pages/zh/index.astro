@@ -6,7 +6,7 @@ import airlines from '../../data/airlines';
 import newsAll from '../../data/news.json';
 const lang = 'zh';
 const t = (zh,en)=> lang==='zh'?zh:en;
-const hotCodes = ['PEK','PVG','CAN','SZX','HKG','SIN','LHR','JFK','CDG','DXB'];
+const hotCodes = ['PEK','PVG','CAN','SZX','HKG','SIN','NRT','ICN','LHR','JFK','CDG','DXB'];
 const hotAirports = hotCodes.map(c=>airports.find(a=>a.iata===c)).filter(Boolean);
 const hotAirlineCodes = ['CA','MU','CZ','HU','CX','SQ','LH','BA','EK','NH'];
 const hotAirlines = hotAirlineCodes.map(c=>airlines.find(a=>a.iata===c)).filter(Boolean);
