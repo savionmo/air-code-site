@@ -78,8 +78,8 @@ function card(x){
   const url=`/${lang}/airline/${encodeURIComponent(x.i.toLowerCase())}/`;
   const nm=lang==='zh'?(x.zh||x.en):x.en;
   const loc=lang==='zh'?x.cn:x.ce;
-  const flag=x.cc?`<img class="flag" src="${FLAG}/${x.cc}.svg" alt="" loading="lazy">`:`<span class="mfrb">✈</span>`;
-  return `<a class="apcard" href="${url}">${flag}`+
+  const logo=x.o?`<img class="alg" src="https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${x.o.toUpperCase()}.png" alt="" loading="lazy" onerror="logoFail(this)">`:`<span class="mfrb">✈</span>`;
+  return `<a class="apcard" href="${url}">${logo}`+
   `<span class="apinfo"><span class="nm">${nm}</span>`+
   `<span class="en">${x.en}</span>${loc?`<span class="loc">${PIN}${loc}</span>`:''}</span>`+
   `<span class="apcode"><b>${x.i}</b><i>${x.o||''}</i></span><span class="go">›</span></a>`;

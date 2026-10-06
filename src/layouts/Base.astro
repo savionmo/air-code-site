@@ -109,6 +109,11 @@ a.newsrow:hover .tt b{color:var(--fb)}
 .dhero h1{margin:0 0 5px;font-size:22px}
 .dhero p{margin:0;opacity:.92;font-size:14px}
 .dhero .alogo{margin-left:auto;flex:none;height:60px;max-width:170px;object-fit:contain;background:rgba(255,255,255,.94);border-radius:12px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+/* 航司 logo：列表卡片 */
+.apcard img.alg{width:64px;height:44px;flex:none;object-fit:contain;background:#fff;border-radius:8px;padding:3px;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+/* 航司详情页：左侧 logo + 右侧二字码 */
+.dhero .dlogo{flex:none;height:76px;max-width:190px;object-fit:contain;background:rgba(255,255,255,.95);border-radius:14px;padding:9px 16px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.dhero .big.right{margin-left:auto;font-size:34px;padding:8px 18px;letter-spacing:3px}
 /* ===== key-value card ===== */
 .kv{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.06)}
 .kvr{display:flex;gap:12px;padding:12px 17px;border-bottom:1px solid #F0F2F5;font-size:14.5px;align-items:baseline}
@@ -129,9 +134,10 @@ a.acard:hover{border-color:var(--fb);box-shadow:0 3px 10px rgba(24,119,242,.18);
 .flagcard .fcode{position:absolute;right:8px;bottom:8px;background:#1877F2;color:#fff;font-weight:800;font-size:13px;letter-spacing:1px;padding:4px 10px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 a.flagcard:hover{border-color:var(--fb);box-shadow:0 3px 10px rgba(24,119,242,.18);text-decoration:none}
 @media(max-width:600px){.flagrow{grid-template-columns:repeat(2,1fr);gap:10px}}
-/* 热门航司：任何宽度都是一行2个 */
+/* 热门航司：任何宽度都是一行2个，用列表卡片风 */
 .hot2{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
-.hot2 .row{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:0 1px 3px rgba(16,24,40,.06);min-width:0}
+.hot2 .apcard{margin:0;min-width:0}
+.mfrb{width:64px;height:44px;flex:none;border-radius:8px;background:linear-gradient(135deg,#1F8BF7,#0A46A8);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.18)}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{display:inline-block;padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:14px;color:var(--ink);font-weight:600}
 .chip:hover{border-color:var(--fb);color:var(--fb);text-decoration:none;box-shadow:0 1px 4px rgba(24,119,242,.2)}
@@ -217,6 +223,7 @@ td,th{border-bottom:1px solid #EFF1F4;padding:9px;text-align:left}
   .article{padding:20px 17px}
 }
 </style>
+<script is:inline>window.logoFail=function(el){var s=document.createElement('span');s.className='mfrb';s.textContent='✈';el.replaceWith(s);};</script>
 </head>
 <body>
 <header class="top"><div class="wrap">

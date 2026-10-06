@@ -10,9 +10,9 @@ const sameCountry = airlines.filter(x=>x.country_en===a.country_en && x.iata!==a
 <Base title={`${a.iata} ${name}`} lang={lang} description={`${a.iata} / ${a.icao} ${t('航空公司代码查询','airline code lookup')}`}>
 <div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/airline/`}>{t('航空公司','Airlines')}</a><span class="sep">›</span>{a.iata}</div>
 <section class="dhero">
-<span class="big">{a.iata}</span>
+{a.icao?<img class="dlogo" src={`https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${a.icao.toUpperCase()}.png`} alt="" loading="lazy" onerror="logoFail(this)" />:<span class="big">{a.iata}</span>}
 <div><h1>{name}</h1><p>{a.country_en} · ICAO {a.icao||'-'}</p></div>
-{a.icao && <img class="alogo" src={`https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${a.icao.toUpperCase()}.png`} alt="" loading="lazy" onerror="this.style.display='none'" />}
+<span class="big right">{a.iata}</span>
 </section>
 <div class="kv">
 <div class="kvr"><span class="k">IATA</span><b>{a.iata}</b></div>
