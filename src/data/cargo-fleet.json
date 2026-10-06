@@ -1,0 +1,127 @@
+[
+  {
+    "aircraft": [
+      {
+        "bulk_m3": 17.0,
+        "code": "b777f",
+        "doors_cm": {
+          "aft": [
+            259,
+            170
+          ],
+          "bulk": [
+            84,
+            112
+          ],
+          "fwd": [
+            259,
+            170
+          ],
+          "main": [
+            373,
+            305
+          ]
+        },
+        "freighter": true,
+        "holds": [
+          {
+            "capacity": "27 Pallets",
+            "floor_kg_m2": 1464,
+            "key": "main",
+            "max_kg": null,
+            "zh": "主货舱"
+          },
+          {
+            "capacity": "18 Containers / 6 Pallets",
+            "floor_kg_m2": 976,
+            "key": "fwd",
+            "max_kg": 30617,
+            "zh": "前货舱"
+          },
+          {
+            "capacity": "14 Containers / 4 Pallets",
+            "floor_kg_m2": 976,
+            "key": "aft",
+            "max_kg": 22226,
+            "zh": "后货舱"
+          },
+          {
+            "capacity": "散装",
+            "floor_kg_m2": 732,
+            "key": "bulk",
+            "max_kg": 4082,
+            "volume_m3": 17.0,
+            "zh": "散货舱"
+          }
+        ],
+        "note_zh": "所示为各货舱最大搭载重量，非整机最大业载；整机最大业载因航线、天气等而异。",
+        "src": "https://www.anacargo.jp/ch/int/specification/b7f.html",
+        "type_en": "Boeing 777 Freighter",
+        "type_zh": "波音777F"
+      },
+      {
+        "code": "b767f",
+        "type_zh": "波音767-F",
+        "type_en": "Boeing 767-F",
+        "freighter": true,
+        "doors_cm": {
+          "main": [
+            340
+          ],
+          "fwd": [
+            170
+          ],
+          "aft": [
+            170
+          ],
+          "bulk": [
+            92
+          ]
+        },
+        "holds": [
+          {
+            "key": "main",
+            "zh": "主货舱",
+            "en": "Main deck",
+            "capacity": "25 集装箱 / 4 集装板",
+            "max_kg": 24734,
+            "floor_kg_m2": 1221
+          },
+          {
+            "key": "fwd",
+            "zh": "前货舱",
+            "en": "Fwd",
+            "capacity": "16 集装箱 / 4 集装板",
+            "max_kg": 20411,
+            "floor_kg_m2": 977
+          },
+          {
+            "key": "aft",
+            "zh": "后货舱",
+            "en": "Aft",
+            "capacity": "7 集装箱 / 6 集装板",
+            "max_kg": 17758,
+            "floor_kg_m2": 977
+          },
+          {
+            "key": "bulk",
+            "zh": "散货舱",
+            "en": "Bulk",
+            "capacity": "散货",
+            "max_kg": 2925,
+            "floor_kg_m2": 732
+          }
+        ],
+        "bulk_m3": 12.2,
+        "src": "https://www.anacargo.jp/ch/int/specification/b6_300f.html",
+        "note_zh": "表中重量为每个货舱的最大搭载重量，非整机总量；实际因航线、天气而异。货舱门尺寸为官网所列数值。",
+        "note_en": "Weights are per-hold maxima, not aircraft totals; vary by route and weather. Door figures as listed officially."
+      }
+    ],
+    "airline": "NH",
+    "airline_en": "ANA",
+    "airline_zh": "全日空",
+    "src": "https://www.anacargo.jp/ch/int/specification/",
+    "checked_at": "2026-10-06"
+  }
+]

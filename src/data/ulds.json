@@ -1,0 +1,555 @@
+[
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "B767",
+      "A320",
+      "A321",
+      "A380"
+    ],
+    "aka": "LD3-45WF",
+    "cat": "container",
+    "code": "AKH",
+    "desc_en": "Low-profile half-width container for narrow-body belly holds.",
+    "desc_zh": "矮型半宽集装箱，适用于窄体客机腹舱。",
+    "dims_cm": [
+      244,
+      153,
+      114
+    ],
+    "door_cm": [
+      137,
+      105
+    ],
+    "max_gross_kg": 1134,
+    "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
+    "tare_kg": 95,
+    "volume_m3": 3.3
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "B767",
+      "A380"
+    ],
+    "aka": "LD-3",
+    "cat": "container",
+    "code": "AKE",
+    "desc_en": "The most widely used lower-deck container, half-width type for wide-body belly holds.",
+    "desc_zh": "最常用的下层货舱集装箱，半宽型，适用于宽体客机腹舱。",
+    "dims_cm": [
+      156,
+      153,
+      163
+    ],
+    "door_cm": [
+      138,
+      153
+    ],
+    "max_gross_kg": 1587,
+    "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
+    "tare_kg": 71,
+    "volume_m3": 4.4
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "B767",
+      "A380"
+    ],
+    "aka": "LD-3F",
+    "cat": "container",
+    "code": "AKN",
+    "desc_en": "LD-3 size container with forkliftable base.",
+    "desc_zh": "LD-3 尺寸，带叉车操作底座的集装箱。",
+    "dims_cm": [
+      156,
+      153,
+      163
+    ],
+    "door_cm": [
+      143,
+      142
+    ],
+    "max_gross_kg": 1587,
+    "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
+    "tare_kg": 120,
+    "volume_m3": 3.8
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B767",
+      "B787"
+    ],
+    "aka": "LD-4",
+    "cat": "container",
+    "code": "DQP",
+    "desc_en": "Full-width lower-deck container; weight limit varies by aircraft and loading direction.",
+    "desc_zh": "全宽下层货舱集装箱，重量限制因机型和装载方向而异。",
+    "dims_cm": [
+      244,
+      153,
+      163
+    ],
+    "door_cm": [
+      231,
+      148
+    ],
+    "limits": [
+      {
+        "for": "B777 / B767",
+        "kg": "2,449"
+      },
+      {
+        "for": "B787 横向装载",
+        "kg": "2,449"
+      },
+      {
+        "for": "B787 纵向装载",
+        "kg": "1,587"
+      }
+    ],
+    "max_gross_kg": 2449,
+    "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
+    "tare_kg": [
+      120,
+      130
+    ],
+    "volume_m3": 5.5
+  },
+  {
+    "aircraft": [
+      "B767",
+      "B777-200/300",
+      "B787-8"
+    ],
+    "aka": "LD-8",
+    "cat": "container",
+    "code": "DQF",
+    "desc_en": "Full-width container for B767 and B777 lower decks.",
+    "desc_zh": "全宽集装箱，适用于 B767、B777 下层货舱。",
+    "dims_cm": [
+      244,
+      153,
+      163
+    ],
+    "door_cm": [
+      225,
+      154
+    ],
+    "max_gross_kg": 2449,
+    "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
+    "tare_kg": [
+      145,
+      155
+    ],
+    "volume_m3": 7.2
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "A380"
+    ],
+    "aka": "LD-36",
+    "cat": "container",
+    "code": "AMF",
+    "desc_en": "Large main-deck container for freighters and wide-body aircraft.",
+    "desc_zh": "大型主货舱集装箱，适用于货机及宽体机。",
+    "dims_cm": [
+      318,
+      244,
+      163
+    ],
+    "door_cm": [
+      302,
+      150
+    ],
+    "max_gross_kg": 5102,
+    "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
+    "tare_kg": 280,
+    "volume_m3": 12.5
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787"
+    ],
+    "cat": "pallet",
+    "code": "PNA",
+    "desc_en": "Small pallet for lower-deck bulk positions.",
+    "desc_zh": "小型集装板，用于下层货舱。",
+    "dims_cm": [
+      244,
+      156
+    ],
+    "limits": [
+      {
+        "for": "B777",
+        "kg": "2,449"
+      },
+      {
+        "for": "B787",
+        "kg": "2,449"
+      }
+    ],
+    "max_gross_kg": 2449,
+    "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
+    "tare_kg": 53
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "A380"
+    ],
+    "cat": "pallet",
+    "code": "PLA",
+    "desc_en": "Half-width pallet for wide-body lower decks.",
+    "desc_zh": "半宽集装板，适用于宽体机下层货舱。",
+    "dims_cm": [
+      318,
+      153,
+      163
+    ],
+    "limits": [
+      {
+        "for": "B777",
+        "kg": "2,449"
+      },
+      {
+        "for": "B787",
+        "kg": "3,175"
+      },
+      {
+        "for": "A380",
+        "kg": "3,174"
+      }
+    ],
+    "max_gross_kg": 3175,
+    "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
+    "tare_kg": 100
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "A380",
+      "B767ER",
+      "B767F",
+      "B777F"
+    ],
+    "cat": "pallet",
+    "code": "PAG",
+    "desc_en": "Standard 88-inch pallet; the workhorse of air cargo, usable on main and lower decks.",
+    "desc_zh": "标准 88 英寸集装板，航空货运主力板型，主/下货舱通用。",
+    "dims_cm": [
+      318,
+      224,
+      163
+    ],
+    "limits": [
+      {
+        "for": "B777 / B787",
+        "kg": "4,676"
+      },
+      {
+        "for": "A380",
+        "kg": "4,626"
+      },
+      {
+        "for": "B767ER",
+        "kg": "5,102"
+      },
+      {
+        "for": "B767F 主舱",
+        "kg": "1,950~6,803"
+      },
+      {
+        "for": "B767F 下舱",
+        "kg": "5,102~6,032"
+      },
+      {
+        "for": "B777F 主舱",
+        "kg": "3,233~6,803"
+      },
+      {
+        "for": "B777F 下舱",
+        "kg": "4,676"
+      }
+    ],
+    "max_gross_kg": 6803,
+    "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
+    "tare_kg": 100,
+    "aka": "PAG / PAJ"
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "B767ER",
+      "A380",
+      "B767F",
+      "B777F"
+    ],
+    "cat": "pallet",
+    "code": "PMC",
+    "desc_en": "Standard 96-inch pallet, the most common main-deck ULD.",
+    "desc_zh": "标准 96 英寸集装板，最常用的主货舱集装板。",
+    "dims_cm": [
+      318,
+      244,
+      163
+    ],
+    "limits": [
+      {
+        "for": "B777 / B787 / B767ER",
+        "kg": "5,102"
+      },
+      {
+        "for": "A380",
+        "kg": "5,103"
+      },
+      {
+        "for": "B767F 主舱",
+        "kg": "3,394~6,803"
+      },
+      {
+        "for": "B767F 下舱",
+        "kg": "5,102~6,803"
+      },
+      {
+        "for": "B777F 主舱",
+        "kg": "3,527~6,803"
+      },
+      {
+        "for": "B777F 下舱",
+        "kg": "5,102"
+      }
+    ],
+    "max_gross_kg": 6803,
+    "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
+    "tare_kg": 110
+  },
+  {
+    "aircraft": [
+      "B767F",
+      "B777F"
+    ],
+    "cat": "pallet",
+    "code": "PRA",
+    "desc_en": "16-foot pallet for freighter main decks, for long cargo.",
+    "desc_zh": "16 英尺长集装板，用于货机主货舱，适合长件货物。",
+    "dims_cm": [
+      498,
+      244,
+      244
+    ],
+    "limits": [
+      {
+        "for": "B767F 主舱",
+        "kg": "6,803~10,437"
+      },
+      {
+        "for": "B777F 主舱",
+        "kg": "6,401~11,339"
+      }
+    ],
+    "max_gross_kg": 11339,
+    "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
+    "tare_kg": 469
+  },
+  {
+    "aircraft": [
+      "B777F"
+    ],
+    "cat": "pallet",
+    "code": "PGA",
+    "desc_en": "20-foot pallet, the largest standard pallet, for 777F main deck.",
+    "desc_zh": "20 英尺集装板，最大标准板型，用于 777F 主货舱。",
+    "dims_cm": [
+      606,
+      244,
+      299
+    ],
+    "limits": [
+      {
+        "for": "B777F",
+        "kg": "7,788~11,339"
+      }
+    ],
+    "max_gross_kg": 11339,
+    "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
+    "tare_kg": 500
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "B767",
+      "A380"
+    ],
+    "aka": "LD-3F",
+    "cat": "special",
+    "code": "RKN",
+    "desc_en": "Temperature-controlled LD-3 container for pharmaceuticals and perishables.",
+    "desc_zh": "温控 LD-3 集装箱，用于药品和生鲜等温控货物。",
+    "dims_cm": [
+      156,
+      153,
+      163
+    ],
+    "door_cm": [
+      142,
+      140
+    ],
+    "max_gross_kg": 1587,
+    "src": "https://www.anacargo.jp/ch/int/specification/sp_container.html",
+    "tare_kg": [
+      260,
+      270
+    ],
+    "volume_m3": 3.5
+  },
+  {
+    "aircraft": [
+      "B777",
+      "B787",
+      "B767ER",
+      "A380"
+    ],
+    "aka": "LD-9",
+    "cat": "special",
+    "code": "RAP",
+    "desc_en": "Temperature-controlled container for pallets, for pharma logistics.",
+    "desc_zh": "温控集装箱，用于药品物流。",
+    "dims_cm": [
+      318,
+      224,
+      163
+    ],
+    "door_cm": [
+      278,
+      145
+    ],
+    "limits": [
+      {
+        "for": "B777 / B787",
+        "kg": "4,676"
+      },
+      {
+        "for": "B767ER",
+        "kg": "5,102"
+      },
+      {
+        "for": "A380",
+        "kg": "4,626"
+      }
+    ],
+    "max_gross_kg": 5102,
+    "src": "https://www.anacargo.jp/ch/int/specification/sp_container.html",
+    "tare_kg": [
+      450,
+      460
+    ],
+    "volume_m3": 8.9
+  },
+  {
+    "aircraft": [
+      "B767F",
+      "B777F"
+    ],
+    "cat": "special",
+    "code": "AAX",
+    "desc_en": "Main-deck container for freighters, high interior height.",
+    "desc_zh": "货机主货舱集装箱，内部高度大。",
+    "dims_cm": [
+      318,
+      224,
+      243
+    ],
+    "door_cm": [
+      295,
+      233
+    ],
+    "limits": [
+      {
+        "for": "B767F 主舱",
+        "kg": "4,857~8,915"
+      },
+      {
+        "for": "B777F 主舱",
+        "kg": "4,082~6,803"
+      }
+    ],
+    "max_gross_kg": 8915,
+    "src": "https://www.anacargo.jp/ch/int/specification/sp_container.html",
+    "tare_kg": 309,
+    "volume_m3": 13.7
+  },
+  {
+    "aircraft": [
+      "B767F",
+      "B777F"
+    ],
+    "cat": "special",
+    "code": "AMA",
+    "desc_en": "Large main-deck container for freighters.",
+    "desc_zh": "大型货机主货舱集装箱。",
+    "dims_cm": [
+      318,
+      244,
+      242
+    ],
+    "door_cm": [
+      293,
+      228
+    ],
+    "limits": [
+      {
+        "for": "B767F 主舱",
+        "kg": "3,394~6,803"
+      },
+      {
+        "for": "B777F 主舱",
+        "kg": "4,082~6,803"
+      }
+    ],
+    "max_gross_kg": 6803,
+    "src": "https://www.anacargo.jp/ch/int/specification/sp_container.html",
+    "tare_kg": 287,
+    "volume_m3": 17.1
+  },
+  {
+    "aircraft": [
+      "B777F"
+    ],
+    "cat": "special",
+    "code": "HMJ",
+    "desc_en": "Heavy-duty ULD for 777F main deck, reinforced structure.",
+    "desc_zh": "重型集装器，用于 777F 主货舱，加强结构。",
+    "dims_cm": [
+      318,
+      244,
+      224
+    ],
+    "door_cm": [
+      170,
+      222
+    ],
+    "limits": [
+      {
+        "for": "B777F 主舱",
+        "kg": "6,804"
+      }
+    ],
+    "max_gross_kg": 6804,
+    "src": "https://www.anacargo.jp/ch/int/specification/sp_container.html",
+    "tare_kg": 1150,
+    "volume_m3": 16.0
+  }
+]
