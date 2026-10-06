@@ -1,0 +1,76 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import fleet from '../../../../data/cargo-fleet.json';
+export function getStaticPaths(){
+  const paths=[];
+  for(const f of fleet) for(const a of f.aircraft)
+    paths.push({ params:{ airline:f.airline.toLowerCase(), actype:a.code }, props:{ f, a } });
+  return paths;
+}
+const { f, a } = Astro.props; const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
+const aname=lang==='zh'?f.airline_zh:f.airline_en;
+const tname=lang==='zh'?a.type_zh:a.type_en;
+const cm=p=>p?a.doors_cm[p].join(' × '):'—';
+// schematic deck svg: main deck pallet row + lower deck holds
+const mainN=parseInt((a.holds.find(h=>h.key==='main')?.capacity||'').match(/\d+/)?.[0]||'0');
+const mainCount=Math.min(mainN,27);
+const lowHolds=a.holds.filter(h=>h.key!=='main'&&h.key!=='bulk');
+const rects=Array.from({length:mainCount},(_,i)=>({x:8+i*((560-16)/27),w:(560-16)/27-3}));
+---
+<Base title={`${tname} ${t('货舱布局','Hold Layout')} | ${aname}`} lang={lang} description={`${aname}${tname}${t('货舱门尺寸、集装器配置、重量限制','door sizes, ULD config, weight limits')}`}>
+<style>
+:global(.crumbs){font-size:13px;color:var(--muted);margin:2px 0 12px}
+:global(.crumbs a){color:var(--fb)}:global(.crumbs .sep){margin:0 6px}
+:global(.tithero){background:linear-gradient(150deg,#1F8BF7 0%,#0A46A8 100%);border-radius:18px;padding:24px 22px;margin:2px 0 18px;color:#fff;box-shadow:0 8px 24px rgba(11,76,184,.3)}
+:global(.tithero h1){margin:0 0 6px;font-size:24px}
+:global(.tithero .sub){margin:0;opacity:.9;font-size:13.5px}
+:global(.kv){background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px}
+:global(.kvr){display:flex;gap:12px;padding:11px 16px;border-bottom:1px solid #F4F6F8;font-size:14px;align-items:baseline}
+:global(.kvr:last-child){border-bottom:0}
+:global(.kvr .k){flex:none;width:150px;color:var(--muted);font-size:13px}
+:global(.kvr b){font-weight:700}
+:global(.sec-head){margin:20px 0 12px}:global(.sec-head h2){margin:0;font-size:18px;display:flex;align-items:center;gap:10px}
+:global(.sec-head h2 .bar){width:5px;height:20px;border-radius:3px;background:var(--fb)}
+:global(.card){background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(16,24,40,.06);margin-bottom:16px}
+:global(.decklbl){font-size:13px;font-weight:700;color:var(--muted);margin:10px 0 4px}
+:global(.deck svg){width:100%;height:auto;display:block}
+:global(.deck rect){fill:#DCEBFF;stroke:#1F8BF7}
+:global(.deck text){fill:#0A46A8;font-size:11px;font-weight:700}
+:global table.spec{width:100%;border-collapse:collapse;font-size:13.5px}
+:global(table.spec th){background:#F0F4FA;text-align:left;padding:9px 12px;font-size:13px}
+:global(table.spec td){padding:9px 12px;border-top:1px solid #EEF1F5}
+:global(.note){font-size:13px;color:var(--muted);background:#F8FAFD;border-radius:10px;padding:12px 14px}
+:global(.srcnote){font-size:12.5px;color:var(--muted);margin-top:16px}
+:global(.srcnote a){color:var(--fb)}
+</style>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/cargo/`}>{t('货运机队','Cargo')}</a><span class="sep">›</span><a href={`/${lang}/cargo/${f.airline.toLowerCase()}/`}>{f.airline}</a><span class="sep">›</span>{tname}</div>
+<section class="tithero"><h1>{tname}</h1><p class="sub">{aname} · {a.freighter?t('货机','Freighter'):t('客机','Passenger')} · {t('数据来源','Source')}: {f.airline_en} Cargo</p></section>
+
+<div class="sec-head"><h2><span class="bar"></span>{t('货舱布局示意','Hold Layout')}</h2></div>
+<div class="card deck">
+{mainCount>0 && (<div><div class="decklbl">{t('主货舱','Main deck')} · {a.holds.find(h=>h.key==='main').capacity}</div>
+<svg viewBox="0 0 576 62" role="img" aria-label="main deck">{rects.map(r=>(<rect x={r.x} y="14" width={r.w} height="34" rx="3"/>))}</svg></div>)}
+{lowHolds.length>0 && (<div><div class="decklbl">{t('下货舱','Lower deck')}</div>
+<svg viewBox="0 0 576 62" role="img" aria-label="lower deck">{lowHolds.map((h,hi)=>{const w=(560-16)/lowHolds.length;const x=8+hi*w;const tx=x+w/2-14;return (<g><rect x={x} y="14" width={w-6} height="34" rx="3"/><text x={tx} y="36">{h.zh}</text></g>);})}</svg></div>)}
+<div class="note">{t('示意图为集装器位置示意，非精确比例。','Schematic ULD positions, not to scale.')}</div>
+</div>
+
+<div class="sec-head"><h2><span class="bar"></span>{t('货舱门尺寸','Door Sizes')} (cm)</h2></div>
+<div class="kv">
+<div class="kvr"><span class="k">{t('主舱门','Main door')}</span><b>{cm('main')}</b></div>
+<div class="kvr"><span class="k">{t('前货舱门','Fwd door')}</span><b>{cm('fwd')}</b></div>
+<div class="kvr"><span class="k">{t('后货舱门','Aft door')}</span><b>{cm('aft')}</b></div>
+<div class="kvr"><span class="k">{t('散货舱门','Bulk door')}</span><b>{cm('bulk')}</b></div>
+</div>
+
+<div class="sec-head"><h2><span class="bar"></span>{t('各舱容量与重量限制','Hold Capacity & Weight Limits')}</h2></div>
+<div class="card" style="padding:0;overflow:hidden">
+<table class="spec"><thead><tr><th>{t('货舱','Hold')}</th><th>{t('集装器容量','ULD Capacity')}</th><th>{t('最大重量','Max Weight')}</th><th>{t('地板承重','Floor Load')}</th></tr></thead><tbody>
+{a.holds.map(h=>(<tr><td><b>{h.zh}</b></td><td>{h.capacity}</td><td>{h.max_kg?h.max_kg.toLocaleString()+' kg':'—'}</td><td>{h.floor_kg_m2?h.floor_kg_m2.toLocaleString()+' kg/m²':'—'}</td></tr>))}
+</tbody></table></div>
+{a.bulk_m3 && (<div class="note">{t('散货舱容积','Bulk hold volume')}: <b>{a.bulk_m3} m³</b></div>)}
+{a.note_zh && (<div class="note" style="margin-top:10px">{a.note_zh}</div>)}
+
+<p class="srcnote">{t('数据引自','Data from')} <a href={a.src} target="_blank" rel="noopener">{f.airline_en} Cargo {t('官网公开资料','official public specs')}</a> · {t('核查','Checked')} {f.checked_at}</p>
+</Base>
