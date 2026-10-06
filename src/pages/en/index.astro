@@ -35,9 +35,9 @@ const acity = a => lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
 </section>
 
 <div class="sec-head"><h2>{t('热门机场','Popular Airports')}</h2><a class="more" href={`/${lang}/airport/`}>{t('全部机场 →','All airports →')}</a></div>
-<div class="grid">
+<div class="flagrow">
 {hotAirports.map(a=>(
-<a class="acard" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><span class="flagwrap"><img class="sflag" src={`${FLAG}/${(a.country_code||'').toLowerCase()}.svg`} alt="" loading="lazy" /><span class="code sm">{a.iata}</span></span><span class="acard-t"><b>{aname(a)}</b><i>{acity(a)} · {a.country_en}</i></span></a>
+<a class="flagcard" href={`/${lang}/airport/${a.iata.toLowerCase()}/`}><img class="sflag" src={`${FLAG}/${(a.country_code||'').toLowerCase()}.svg`} alt={a.iata} loading="lazy" /><span class="fcode">{a.iata}</span></a>
 ))}
 </div>
 
