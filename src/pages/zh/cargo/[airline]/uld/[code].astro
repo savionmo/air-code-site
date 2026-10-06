@@ -19,6 +19,7 @@ const catZh={container:t('集装箱','Container'),pallet:t('集装板','Pallet')
 const dims=u.dims_cm.join(' × ')+' cm';
 const tare=Array.isArray(u.tare_kg)?u.tare_kg.join(' ~ ')+' kg':u.tare_kg+' kg';
 const alb=f.airline.toLowerCase();
+const profile=u.cat==='pallet'?'slab':(['AKE','AKN','RKN'].includes(u.code)?'ld3':'box');
 ---
 <Base title={`${u.code} ${t('集装器规格','ULD Specs')} | ${aname}`} lang={lang} description={`${aname} ${u.code}${t('集装器规格','ULD specs')}`}>
 <style>
@@ -51,7 +52,7 @@ const alb=f.airline.toLowerCase();
 <section class="uhero"><span class="ucode">{u.code}</span><div><h1>{catZh[u.cat]}{u.aka?` (${u.aka})`:''}</h1><p class="sub">{aname} · {lang==='zh'?u.desc_zh:u.desc_en}</p></div></section>
 
 <div class="sec-head"><h2><span class="bar"></span>{t('外形示意','Dimensions')}</h2></div>
-<div class="card"><UldDiagram code={u.code} aka={u.aka||""} dims={u.dims_cm} door={u.door_cm||null} /></div>
+<div class="card"><UldDiagram code={u.code} aka={u.aka||""} dims={u.dims_cm} door={u.door_cm||null} profile={profile} /></div>
 
 <div class="sec-head"><h2><span class="bar"></span>{t('规格','Specifications')}</h2></div>
 <div class="kv">
