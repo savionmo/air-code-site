@@ -1,7 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import news from '../../../data/news.json';
-export function getStaticPaths(){ return news.map(n=>({ params:{ slug:n.slug }, props:{ n } })); }
+export function getStaticPaths(){ return news.filter(n=>n.lang==='en').map(n=>({ params:{ slug:n.slug }, props:{ n } })); }
 const { n } = Astro.props; const lang='en';
 const t=(zh,en)=>lang==='zh'?zh:en;
 const related = news.filter(x=>x.lang===n.lang && x.slug!==n.slug).slice(0,5);

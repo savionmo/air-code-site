@@ -1,7 +1,6 @@
 ---
 const FLAG="https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3";
 import Base from '../../layouts/Base.astro';
-import searchIndex from '../../data/search-index';
 import airports from '../../data/airports';
 import airlines from '../../data/airlines';
 import newsAll from '../../data/news.json';
@@ -29,7 +28,7 @@ const acity = a => lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
 <input id="q" type="search" placeholder={t('试试 PEK / 北京 / CA / 77W','Try PEK / Beijing / CA / 77W')} autocomplete="off" />
 <div id="results" class="sr"></div>
 </div>
-<p class="hint">{t('数据：7863 机场 · 995 航空公司','Data: 7,863 airports · 995 airlines')}</p>
+<p class="hint">{t(`数据：${airports.length} 机场 · ${airlines.length} 航空公司`,`Data: ${airports.length.toLocaleString('en-US')} airports · ${airlines.length.toLocaleString('en-US')} airlines`)}</p>
 </section>
 
 <div class="sec-head"><h2>{t('热门机场','Popular Airports')}</h2><a class="more" href={`/${lang}/airport/`}>{t('全部机场 →','All airports →')}</a></div>
@@ -56,12 +55,13 @@ const acity = a => lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
 )})}
 </div>
 
-<script define:vars={{ searchIndex, lang }}>
-let kind='all';
+<script define:vars={{ lang }}>
+let kind='all', IDX=null;
 const input=document.getElementById('q'); const box=document.getElementById('results');
+const KMAP={airport:0,airline:1,aircraft:2};
 document.getElementById('tabs').addEventListener('click',e=>{ if(e.target.tagName!=='BUTTON')return; kind=e.target.dataset.kind; document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b===e.target)); input.dispatchEvent(new Event('input')); });
-function href(x){ if(x.kind==='airport')return `/${lang}/airport/${x.code.toLowerCase()}/`; if(x.kind==='airline')return `/${lang}/airline/${x.code.toLowerCase()}/`; return `/${lang}/aircraft/`; }
-function render(list){ box.innerHTML=list.slice(0,20).map(x=>{ const name=(lang==='zh'&&x.zh)?x.zh:x.en; const meta=[x.city_en,x.country_en].filter(Boolean).join(' · '); return `<div class="sr-item"><span class="code sm">${x.code}</span><a class="tt" href="${href(x)}">${name||x.code}<span class="meta">${meta}</span></a><span class="badge">${x.kind}</span></div>`}).join('') || `<p class="muted" style="padding:10px 4px">${lang==='zh'?'没有找到，换个关键词试试':'No results — try another keyword'}</p>` }
-input.addEventListener('input',()=>{ const q=input.value.trim().toLowerCase(); if(!q){box.innerHTML='';return} const list=searchIndex.filter(x=>(kind==='all'||x.kind===kind)&&[x.code,x.icao,x.en,x.zh,x.city_en,x.city_zh].join(' ').toLowerCase().includes(q)); render(list); });
+async function ensure(){ if(IDX)return IDX; const r=await fetch('/search-suggest.json'); IDX=await r.json(); return IDX; }
+function render(list){ box.innerHTML=list.slice(0,20).map(x=>{ const name=(lang==='zh'&&x[3])?x[3]:x[4]; const meta=lang==='zh'?x[5]:x[6]; const kname=['airport','airline','aircraft'][x[0]]||''; return `<div class="sr-item"><span class="code sm">${x[1]}</span><a class="tt" href="/${lang}/${x[8]}">${name||x[1]}<span class="meta">${meta||''}</span></a><span class="badge">${kname}</span></div>`}).join('') || `<p class="muted" style="padding:10px 4px">${lang==='zh'?'没有找到，换个关键词试试':'No results — try another keyword'}</p>` }
+input.addEventListener('input',async()=>{ const q=input.value.trim().toLowerCase(); if(!q){box.innerHTML='';return} const idx=await ensure(); const list=idx.filter(x=>(kind==='all'||x[0]===KMAP[kind])&&[x[1],x[2],x[3],x[4],x[5],x[6]].join(' ').toLowerCase().includes(q)); render(list); });
 </script>
 </Base>

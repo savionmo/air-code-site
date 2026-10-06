@@ -10,6 +10,14 @@ const SRC = 'https://davidmegginson.github.io/ourairports-data/airports.csv';
 const DST = new URL('src/data/', root);
 const CONT = { AS: 'AS', EU: 'EU', NA: 'NA', SA: 'SA', AF: 'AF', OC: 'OC', AN: 'OC' };
 const KEEP = new Set(['large_airport', 'medium_airport', 'small_airport']);
+// 上游 OurAirports 的已知错误/重复条目（IATA）：BSZ 与 FRU 同为 UCFM 比什凯克玛纳斯机场，FRU 为正确代码（见 airports-extra.json 手工维护）
+const DROP_IATA = new Set(['BSZ']);
+// 清洗官网链接常见 typo（如 hhttps://）
+function cleanUrl(u) {
+  u = (u || '').trim();
+  u = u.replace(/^hhttps:\/\//i, 'https://').replace(/^htpps:\/\//i, 'https://');
+  return u;
+}
 
 function parseCSV(text) {
   const rows = [];
@@ -56,6 +64,7 @@ for (let i = 1; i < rows.length; i++) {
   if (!r || r.length < head.length) continue;
   const iata = get(r, 'iata_code').toUpperCase();
   if (!iata || !KEEP.has(get(r, 'type'))) continue;
+  if (DROP_IATA.has(iata)) continue;
   const sched = get(r, 'scheduled_service') === 'yes';
   const icao = get(r, 'icao_code').toUpperCase();
   if (!sched && !icao) continue;
@@ -83,7 +92,7 @@ for (let i = 1; i < rows.length; i++) {
     continent: CONT[get(r, 'continent')] || 'OT',
     tz,
     wiki: get(r, 'wikipedia_link'),
-    home: get(r, 'home_link'),
+    home: cleanUrl(get(r, 'home_link')),
     _s: score,
   });
 }
