@@ -112,9 +112,22 @@ function card(x){
   `<span class="en">${x.en}</span><span class="loc">${PIN}${loc}</span></span>`+
   `<span class="apcode"><b>${x.i}</b><i>${x.o||''}</i></span><span class="go">›</span></a>`;
 }
+function relScore(x,nq){
+  const C=[x.i,x.o].map(s=>(s||'').toLowerCase()).filter(Boolean);
+  const N=[x.zh,x.en].map(s=>(s||'').toLowerCase()).filter(Boolean);
+  if(C.includes(nq))return 0;
+  if(C.some(c=>c.startsWith(nq)))return 1;
+  if(N.includes(nq))return 2;
+  if(N.some(n=>n.startsWith(nq)))return 3;
+  if(C.some(c=>c.includes(nq)))return 4;
+  if(N.some(n=>n.includes(nq)))return 5;
+  return 6;
+}
 function render(){
+  const nq=q.trim().toLowerCase();
   let list=DATA.filter(match);
-  if(sort==='i')list=[...list].sort((a,b)=>a.i<b.i?-1:1);
+  if(nq)list=[...list].sort((a,b)=>relScore(a,nq)-relScore(b,nq)||(a.i<b.i?-1:1));
+  else   if(sort==='i')list=[...list].sort((a,b)=>a.i<b.i?-1:1);
   else if(sort==='c')list=[...list].sort((a,b)=>((lang==='zh'?a.cn:a.cen)+a.i)<((lang==='zh'?b.cn:b.cen)+b.i)?-1:1);
   const pages=Math.max(1,Math.ceil(list.length/PER));
   if(page>pages)page=pages;
