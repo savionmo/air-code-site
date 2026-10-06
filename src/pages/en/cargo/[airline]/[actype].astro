@@ -44,7 +44,7 @@ const rects=Array.from({length:mainCount},(_,i)=>({x:8+i*((560-16)/27),w:(560-16
 :global(.srcnote){font-size:12.5px;color:var(--muted);margin-top:16px}
 :global(.srcnote a){color:var(--fb)}
 </style>
-<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/cargo/`}>{t('货运机队','Cargo')}</a><span class="sep">›</span><a href={`/${lang}/cargo/${f.airline.toLowerCase()}/`}>{f.airline}</a><span class="sep">›</span>{tname}</div>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/cargo/`}>{t('货机资料','Cargo Data')}</a><span class="sep">›</span><a href={`/${lang}/cargo/${f.airline.toLowerCase()}/`}>{f.airline}</a><span class="sep">›</span>{tname}</div>
 <section class="tithero"><h1>{tname}</h1><p class="sub">{aname} · {a.freighter?t('货机','Freighter'):t('客机','Passenger')} · {t('数据来源','Source')}: {f.airline_en} Cargo</p></section>
 
 <div class="sec-head"><h2><span class="bar"></span>{t('货舱布局示意','Hold Layout')}</h2></div>

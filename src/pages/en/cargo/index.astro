@@ -1,13 +1,10 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import fleet from '../../../data/cargo-fleet.json';
-import ulds from '../../../data/ulds.json';
 const lang='en';
 const t=(zh,en)=>lang==='zh'?zh:en;
-const cats=[['container',t('集装箱','Containers')],['pallet',t('集装板','Pallets')],['special',t('特殊集装器','Special ULDs')]];
-const count=c=>ulds.filter(u=>u.cat===c).length;
 ---
-<Base title={t('货运机队与集装器_按航空公司查询','Cargo Fleet & ULDs by Airline')} lang={lang} description={t('按航空公司查询货机机型、货舱布局与集装器配置，集装器规格库。','Cargo aircraft, hold layouts and ULD configurations by airline. ULD spec library.')}>
+<Base title={t('货机资料_按航空公司查询','Cargo Data by Airline')} lang={lang} description={t('按航空公司查询货机机型、货舱布局与集装器配置，集装器规格库。','Cargo aircraft, hold layouts and ULD configurations by airline. ULD spec library.')}>
 <style>
 :global(.apt-hero){background:linear-gradient(150deg,#1F8BF7 0%,#0A46A8 100%);border-radius:18px;padding:26px 22px 22px;margin:2px 0 18px;box-shadow:0 8px 24px rgba(11,76,184,.3);color:#fff}
 :global(.apt-crumbs){font-size:13px;color:rgba(255,255,255,.85);margin-bottom:10px}
@@ -24,18 +21,11 @@ const count=c=>ulds.filter(u=>u.cat===c).length;
 :global(.alinfo .en){font-size:13px;color:var(--muted)}
 :global(.alinfo .meta){font-size:13px;color:var(--muted);margin-top:4px}
 :global(.go){margin-left:auto;color:var(--muted);font-size:22px}
-:global(.uldgrid){display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-:global(.uldcat){background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center;box-shadow:0 1px 3px rgba(16,24,40,.06)}
-:global(a.uldcat:hover){border-color:var(--fb);text-decoration:none}
-:global(.uldcat b){font-size:18px})
-:global(.uldcat .n){display:block;margin-top:6px;font-size:13px;color:var(--muted)}
-:global(.uldcat .codes){display:block;margin-top:10px;font-size:12.5px;color:var(--fb);font-weight:600}
-@media(max-width:600px){:global(.uldgrid){grid-template-columns:1fr}}
-</style>
+@media(max-width:600px){</style>
 
 <section class="apt-hero">
-<div class="apt-crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a> › {t('货运机队','Cargo')}</div>
-<h1>{t('货运机队与集装器','Cargo Fleet & ULDs')}</h1>
+<div class="apt-crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a> › {t('货机资料','Cargo Data')}</div>
+<h1>{t('货机资料','Cargo Data')}</h1>
 <p class="sub">{t('按航空公司查货机机型 · 货舱布局 · 集装器配置，附集装器规格库','Aircraft, hold layouts & ULD configs by airline, plus a ULD spec library')}</p>
 </section>
 
@@ -47,10 +37,4 @@ const count=c=>ulds.filter(u=>u.cat===c).length;
 <span class="meta">{t('货机','Freighters')} {f.aircraft.filter(a=>a.freighter).length} · {t('机型','Types')} {f.aircraft.length} · {t('核查','Checked')} {f.checked_at}</span></span>
 <span class="go">›</span></a>);})}
 
-<div class="sec-head"><h2><span class="bar"></span>{t('集装器库','ULD Library')}</h2><a class="more" href={`/${lang}/uld/`}>{t('全部 →','All →')}</a></div>
-<div class="uldgrid">
-{cats.map(([k,label])=>(
-<a class="uldcat" href={`/${lang}/uld/#${k}`}><b>{label}</b><span class="n">{count(k)} {t('种','types')}</span>
-<span class="codes">{ulds.filter(u=>u.cat===k).slice(0,6).map(u=>u.code).join(' · ')}</span></a>))}
-</div>
 </Base>

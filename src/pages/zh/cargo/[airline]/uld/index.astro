@@ -1,0 +1,42 @@
+---
+import Base from '../../../../../layouts/Base.astro';
+import fleet from '../../../../../data/cargo-fleet.json';
+import ulds from '../../../../../data/ulds.json';
+export function getStaticPaths(){ return fleet.map(f=>({ params:{ airline:f.airline.toLowerCase() }, props:{ f } })); }
+const { f } = Astro.props; const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
+const aname=lang==='zh'?f.airline_zh:f.airline_en;
+const mine=ulds.filter(u=>(u.airline||'').toLowerCase()===f.airline.toLowerCase());
+const cats=[['container',t('集装箱','Containers')],['pallet',t('集装板','Pallets')],['special',t('特殊集装器','Special ULDs')]];
+---
+<Base title={`${aname}${t('集装器库','ULD Library')}`} lang={lang} description={`${aname}${t('集装器规格：集装箱、集装板、特殊集装器。','ULD specs: containers, pallets, special units.')}`}>
+<style>
+:global(.crumbs){font-size:13px;color:var(--muted);margin:2px 0 12px}
+:global(.crumbs a){color:var(--fb)}:global(.crumbs .sep){margin:0 6px}
+:global(.apt-hero){background:linear-gradient(150deg,#1F8BF7 0%,#0A46A8 100%);border-radius:18px;padding:26px 22px 22px;margin:2px 0 18px;box-shadow:0 8px 24px rgba(11,76,184,.3);color:#fff}
+:global(.apt-hero h1){margin:0 0 6px;font-size:25px}
+:global(.apt-hero .sub){margin:0;opacity:.92;font-size:14px}
+:global(.sec-head){margin:22px 0 12px}:global(.sec-head h2){margin:0;font-size:18px}
+:global(.sec-head p){margin:4px 0 0;font-size:13px;color:var(--muted)}
+:global(.uldgrid){display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+:global(.ucard){background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+:global(a.ucard:hover){border-color:var(--fb);text-decoration:none}
+:global(.ucard .code){font-size:20px;font-weight:800;color:var(--fb)}
+:global(.ucard .nm){font-size:13.5px;font-weight:600;margin:4px 0 8px}
+:global(.ucard .sp){font-size:12.5px;color:var(--muted);line-height:1.7}
+@media(max-width:700px){:global(.uldgrid){grid-template-columns:1fr 1fr}}
+@media(max-width:460px){:global(.uldgrid){grid-template-columns:1fr}}
+</style>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/cargo/`}>{t('货机资料','Cargo Data')}</a><span class="sep">›</span><a href={`/${lang}/cargo/${f.airline.toLowerCase()}/`}>{f.airline}</a><span class="sep">›</span>{t('集装器','ULDs')}</div>
+<section class="apt-hero">
+<h1>{aname} · {t('集装器库','ULD Library')}</h1>
+<p class="sub">{t('集装箱 · 集装板 · 特殊集装器','Containers · Pallets · Special ULDs')} · {mine.length} {t('种','types')}</p>
+</section>
+{cats.map(([k,label])=>{const items=mine.filter(u=>u.cat===k); if(!items.length)return null; return (
+<div id={k}><div class="sec-head"><h2>{label}</h2></div>
+<div class="uldgrid">{items.map(u=>(
+<a class="ucard" href={`/${lang}/cargo/${f.airline.toLowerCase()}/uld/${u.code.toLowerCase()}/`}>
+<div class="code">{u.code}</div><div class="nm">{u.aka?u.aka+' · ':''}{lang==='zh'?u.desc_zh:u.desc_en}</div>
+<div class="sp">{u.dims_cm.join(' × ')} cm<br/>{t('自重','Tare')} {Array.isArray(u.tare_kg)?u.tare_kg.join('~'):u.tare_kg} kg</div>
+</a>))}</div></div>);})}
+</Base>

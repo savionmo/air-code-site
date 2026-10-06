@@ -1,0 +1,42 @@
+---
+import Base from '../../../layouts/Base.astro';
+import fleet from '../../../data/cargo-fleet.json';
+const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
+// 按机型聚合: code -> {type_zh,type_en,airlines:[{airline,airline_zh,airline_en,code}]}
+const types={};
+for(const f of fleet){
+  for(const a of f.aircraft){
+    if(!types[a.code]) types[a.code]={type_zh:a.type_zh,type_en:a.type_en,freighter:a.freighter,airlines:[]};
+    types[a.code].airlines.push({al:f.airline,al_zh:f.airline_zh,al_en:f.airline_en,code:a.code});
+  }
+}
+const list=Object.entries(types);
+---
+<Base title={t('货机机型_按机型查航司货机','Freighter Types_By Type')} lang={lang} description={t('货机机型汇总，查看各航司运营的货机机型。','Freighter types, see which airlines operate each type.')}>
+<style>
+:global(.apt-hero){background:linear-gradient(150deg,#1F8BF7 0%,#0A46A8 100%);border-radius:18px;padding:26px 22px 22px;margin:2px 0 18px;box-shadow:0 8px 24px rgba(11,76,184,.3);color:#fff}
+:global(.apt-crumbs){font-size:13px;color:rgba(255,255,255,.85);margin-bottom:10px}
+:global(.apt-crumbs a){color:#fff}
+:global(.apt-hero h1){margin:0 0 6px;font-size:27px;letter-spacing:1px}
+:global(.apt-hero .sub){margin:0;opacity:.92;font-size:14px}
+:global(.alcard){display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+:global(a.alcard:hover){border-color:var(--fb);text-decoration:none}
+:global(.alcode){flex:none;min-width:76px;text-align:center;background:linear-gradient(135deg,#1F8BF7,#0A46A8);color:#fff;font-weight:800;font-size:15px;border-radius:10px;padding:10px 8px}
+:global(.alinfo .nm){font-size:17px;font-weight:700}
+:global(.alinfo .en){font-size:13px;color:var(--muted)}
+:global(.alinfo .meta){font-size:13px;color:var(--muted);margin-top:4px}
+:global(.go){margin-left:auto;color:var(--muted);font-size:22px}
+</style>
+<section class="apt-hero">
+<div class="apt-crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a> › {t('货机机型','Freighter Types')}</div>
+<h1>{t('货机机型','Freighter Types')}</h1>
+<p class="sub">{t('按机型查看各航司货机货舱资料','Browse cargo specs by aircraft type across airlines')}</p>
+</section>
+{list.map(([code,ty])=>(
+<a class="alcard" href={`/${lang}/freighter/${code}/`}>
+<span class="alcode">{code.replace(/^b/,'B').toUpperCase()}</span>
+<span class="alinfo"><span class="nm">{lang==='zh'?ty.type_zh:ty.type_en}</span>
+<span class="meta">{ty.airlines.length} {t('家航司运营','airline(s)')} · {ty.airlines.map(x=>x.al).join(' / ')}</span></span>
+<span class="go">›</span></a>))}
+</Base>

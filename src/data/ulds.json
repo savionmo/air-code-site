@@ -25,7 +25,8 @@
     "max_gross_kg": 1134,
     "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
     "tare_kg": 95,
-    "volume_m3": 3.3
+    "volume_m3": 3.3,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -51,7 +52,8 @@
     "max_gross_kg": 1587,
     "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
     "tare_kg": 71,
-    "volume_m3": 4.4
+    "volume_m3": 4.4,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -77,7 +79,8 @@
     "max_gross_kg": 1587,
     "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
     "tare_kg": 120,
-    "volume_m3": 3.8
+    "volume_m3": 3.8,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -119,7 +122,8 @@
       120,
       130
     ],
-    "volume_m3": 5.5
+    "volume_m3": 5.5,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -147,7 +151,8 @@
       145,
       155
     ],
-    "volume_m3": 7.2
+    "volume_m3": 7.2,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -172,7 +177,8 @@
     "max_gross_kg": 5102,
     "src": "https://www.anacargo.jp/ch/int/specification/cm_container.html",
     "tare_kg": 280,
-    "volume_m3": 12.5
+    "volume_m3": 12.5,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -199,7 +205,8 @@
     ],
     "max_gross_kg": 2449,
     "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
-    "tare_kg": 53
+    "tare_kg": 53,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -232,7 +239,8 @@
     ],
     "max_gross_kg": 3175,
     "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
-    "tare_kg": 100
+    "tare_kg": 100,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -285,7 +293,8 @@
     "max_gross_kg": 6803,
     "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
     "tare_kg": 100,
-    "aka": "PAG / PAJ"
+    "aka": "PAG / PAJ",
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -333,7 +342,8 @@
     ],
     "max_gross_kg": 6803,
     "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
-    "tare_kg": 110
+    "tare_kg": 110,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -361,7 +371,8 @@
     ],
     "max_gross_kg": 11339,
     "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
-    "tare_kg": 469
+    "tare_kg": 469,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -384,7 +395,8 @@
     ],
     "max_gross_kg": 11339,
     "src": "https://www.anacargo.jp/ch/int/specification/pallet.html",
-    "tare_kg": 500
+    "tare_kg": 500,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -413,7 +425,8 @@
       260,
       270
     ],
-    "volume_m3": 3.5
+    "volume_m3": 3.5,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -456,7 +469,8 @@
       450,
       460
     ],
-    "volume_m3": 8.9
+    "volume_m3": 8.9,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -489,7 +503,8 @@
     "max_gross_kg": 8915,
     "src": "https://www.anacargo.jp/ch/int/specification/sp_container.html",
     "tare_kg": 309,
-    "volume_m3": 13.7
+    "volume_m3": 13.7,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -522,7 +537,8 @@
     "max_gross_kg": 6803,
     "src": "https://www.anacargo.jp/ch/int/specification/sp_container.html",
     "tare_kg": 287,
-    "volume_m3": 17.1
+    "volume_m3": 17.1,
+    "airline": "NH"
   },
   {
     "aircraft": [
@@ -550,6 +566,7 @@
     "max_gross_kg": 6804,
     "src": "https://www.anacargo.jp/ch/int/specification/sp_container.html",
     "tare_kg": 1150,
-    "volume_m3": 16.0
+    "volume_m3": 16.0,
+    "airline": "NH"
   }
 ]

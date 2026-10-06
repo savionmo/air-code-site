@@ -1,0 +1,49 @@
+---
+import Base from '../../../layouts/Base.astro';
+import fleet from '../../../data/cargo-fleet.json';
+export function getStaticPaths(){
+  const codes=new Set();
+  for(const f of fleet) for(const a of f.aircraft) codes.add(a.code);
+  return [...codes].map(code=>({ params:{ actype:code }, props:{ code } }));
+}
+const { code } = Astro.props; const lang='zh';
+const t=(zh,en)=>lang==='zh'?zh:en;
+// 收集运营该机型的所有航司及其机型数据
+const ops=[];
+for(const f of fleet){
+  for(const a of f.aircraft){
+    if(a.code===code) ops.push({f,a});
+  }
+}
+const ty=ops[0].a;
+const tname=lang==='zh'?ty.type_zh:ty.type_en;
+---
+<Base title={`${tname} ${t('运营航司','Operators')}`} lang={lang} description={`${tname}${t('各航司货舱资料','cargo specs by airline')}`}>
+<style>
+:global(.crumbs){font-size:13px;color:var(--muted);margin:2px 0 12px}
+:global(.crumbs a){color:var(--fb)}:global(.crumbs .sep){margin:0 6px}
+:global(.tithero){background:linear-gradient(150deg,#1F8BF7 0%,#0A46A8 100%);border-radius:18px;padding:24px 22px;margin:2px 0 18px;color:#fff;box-shadow:0 8px 24px rgba(11,76,184,.3)}
+:global(.tithero h1){margin:0 0 6px;font-size:24px}
+:global(.tithero .sub){margin:0;opacity:.9;font-size:13.5px}
+:global(.sec-head){margin:20px 0 12px}:global(.sec-head h2){margin:0;font-size:18px;display:flex;align-items:center;gap:10px}
+:global(.sec-head h2 .bar){width:5px;height:20px;border-radius:3px;background:var(--fb)}
+:global(.alcard){display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+:global(a.alcard:hover){border-color:var(--fb);text-decoration:none}
+:global(.alcode){flex:none;min-width:64px;text-align:center;background:linear-gradient(135deg,#1F8BF7,#0A46A8);color:#fff;font-weight:800;font-size:20px;border-radius:10px;padding:10px 8px}
+:global(.alinfo .nm){font-size:16.5px;font-weight:700}
+:global(.alinfo .meta){display:block;font-size:13px;color:var(--muted);margin-top:4px}
+:global(.go){margin-left:auto;color:var(--muted);font-size:22px}
+:global(.srcnote){font-size:12.5px;color:var(--muted);margin-top:16px}
+:global(.srcnote a){color:var(--fb)}
+</style>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/freighter/`}>{t('货机机型','Freighter Types')}</a><span class="sep">›</span>{tname}</div>
+<section class="tithero"><h1>{tname}</h1><p class="sub">{ops.length} {t('家航司运营 · 点击查看各航司货舱资料','airline(s) · tap for each airline’s cargo specs')}</p></section>
+<div class="sec-head"><h2><span class="bar"></span>{t('运营航司','Operators')}</h2></div>
+{ops.map(({f,a})=>(
+<a class="alcard" href={`/${lang}/cargo/${f.airline.toLowerCase()}/${a.code}/`}>
+<span class="alcode">{f.airline}</span>
+<span class="alinfo"><span class="nm">{lang==='zh'?f.airline_zh:f.airline_en}</span>
+<span class="meta">{a.holds.map(h=>`${h.zh}: ${h.capacity}`).slice(0,2).join(' · ')}</span></span>
+<span class="go">›</span></a>))}
+<p class="srcnote">{t('各航司数据引自其官网公开资料，核查日期见各航司页面。','Per-airline data from official public sources; check dates on each airline page.')}</p>
+</Base>
