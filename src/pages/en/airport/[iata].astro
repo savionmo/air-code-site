@@ -14,6 +14,9 @@ const sameCountry = airports.filter(x=>x.country_code===a.country_code && x.iata
 const mapSrc=`https://www.openstreetmap.org/export/embed.html?bbox=${a.lon-0.35},${a.lat-0.22},${a.lon+0.35},${a.lat+0.22}&layer=mapnik&marker=${a.lat},${a.lon}`;
 const mapLink=`https://www.openstreetmap.org/?mlat=${a.lat}&mlon=${a.lon}#map=12/${a.lat}/${a.lon}`;
 const rname=x=>lang==='zh'?(x.name_zh||x.name_en):x.name_en;
+const tzShow=(()=>{ if(!a.tz) return '—'; try{ const p=new Intl.DateTimeFormat('en',{timeZone:a.tz,timeZoneName:'shortOffset'}).formatToParts(); const o=(p.find(x=>x.type==='timeZoneName')||{}).value||''; return `${a.tz} (${o.replace('GMT','UTC')})`; }catch{ return a.tz; } })();
+const elevShow=a.elev_ft!=null ? `${Math.round(a.elev_ft*0.3048)} ${t('米','m')} (${a.elev_ft} ft)` : '—';
+
 const rcity=x=>lang==='zh'?(x.city_zh||x.city_en):x.city_en;
 const rctry=x=>lang==='zh'?(countryZh[x.country_code]||x.country_en):x.country_en;
 ---
@@ -38,6 +41,9 @@ const rctry=x=>lang==='zh'?(countryZh[x.country_code]||x.country_en):x.country_e
 <div class="kvr"><span class="k">{t('城市','City')}</span>{city}</div>
 <div class="kvr"><span class="k">{t('国家','Country')}</span>{ctry} ({a.country_code})</div>
 <div class="kvr"><span class="k">{t('经纬度','Coordinates')}</span>{a.lat}, {a.lon}</div>
+<div class="kvr"><span class="k">{t('时区','Time zone')}</span>{tzShow}</div>
+<div class="kvr"><span class="k">{t('海拔','Elevation')}</span>{elevShow}</div>
+{a.home && <div class="kvr"><span class="k">{t('官网','Website')}</span><a href={a.home} target="_blank" rel="noopener">{t('访问官网 →','Visit website →')}</a></div>}
 </div>
 
 <div class="sec-head"><h2>{t('位置地图','Map')}</h2><a class="more" href={mapLink} target="_blank" rel="noopener">{t('查看大图 →','Open larger map →')}</a></div>

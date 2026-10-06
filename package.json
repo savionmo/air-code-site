@@ -6,9 +6,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "prebuild": "node scripts/build-suggest.mjs"
+    "prebuild": "node scripts/build-airports.mjs && node scripts/build-suggest.mjs"
   },
   "dependencies": {
-    "astro": "^5.13.0"
+    "astro": "^5.13.0",
+    "tz-lookup": "^6.1.25"
   }
 }

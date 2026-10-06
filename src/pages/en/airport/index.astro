@@ -95,16 +95,18 @@ const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 </aside>
 </div>
 
-<script define:vars={{ DATA:data, lang, PIN, FLAG }}>
-const PER=15; let cont='all', q='', page=1, sort='d';
+<script define:vars={{ lang, PIN, FLAG }}>
+const PER=15; let cont='all', q='', page=1, sort='d', DATA=[];
 const $=id=>document.getElementById(id);
 const T=(zh,en)=>lang==='zh'?zh:en;
 const CL={all:T('全部','All'),AS:T('亚洲','Asia'),EU:T('欧洲','Europe'),NA:T('北美洲','North America'),SA:T('南美洲','South America'),AF:T('非洲','Africa'),OC:T('大洋洲','Oceania')};
-function match(x){ const nq=q.trim().toLowerCase(); if(cont!=='all'&&x.ct!==cont)return false; if(!nq)return true; return [x.i,x.o,x.zh,x.en,x.c,x.cn,x.ce].join(' ').toLowerCase().includes(nq); }
+function norm(it){ const z=(it[5]||'').split(' · '),e=(it[6]||'').split(' · ');
+  return {i:it[1],o:it[2]||'',zh:it[3]||'',en:it[4]||'',c:z[0]||'',cn:z[1]||'',ce:e[0]||'',cen:e[1]||'',cc:it[7]||'',main:it[10]===1,ct:it[9]||'OT'}; }
+function match(x){ const nq=q.trim().toLowerCase(); if(cont!=='all'&&x.ct!==cont)return false; if(!nq)return true; return [x.i,x.o,x.zh,x.en,x.c,x.cn,x.ce,x.cen].join(' ').toLowerCase().includes(nq); }
 function card(x){
   const url=`/${lang}/airport/${x.i.toLowerCase()}/`;
   const nm=lang==='zh'?(x.zh||x.en):x.en;
-  const loc=lang==='zh'?`${x.cn} · ${x.c}`:`${x.c} · ${x.ce}`;
+  const loc=lang==='zh'?`${x.cn} · ${x.c}`:`${x.ce} · ${x.cen}`;
   return `<a class="apcard" href="${url}"><img class="flag" src="${FLAG}/${x.cc}.svg" alt="" loading="lazy">`+
   `<span class="apinfo"><span class="nm">${nm}${x.main?`<i class="mainbadge">${T('主机场','Main airport')}</i>`:''}</span>`+
   `<span class="en">${x.en}</span><span class="loc">${PIN}${loc}</span></span>`+
@@ -113,10 +115,10 @@ function card(x){
 function render(){
   let list=DATA.filter(match);
   if(sort==='i')list=[...list].sort((a,b)=>a.i<b.i?-1:1);
-  else if(sort==='c')list=[...list].sort((a,b)=>((lang==='zh'?a.cn:a.ce)+a.i)<((lang==='zh'?b.cn:b.ce)+b.i)?-1:1);
+  else if(sort==='c')list=[...list].sort((a,b)=>((lang==='zh'?a.cn:a.cen)+a.i)<((lang==='zh'?b.cn:b.cen)+b.i)?-1:1);
   const pages=Math.max(1,Math.ceil(list.length/PER));
   if(page>pages)page=pages;
-  const s=(page-1)*PER, rows=list.slice(s,s+PER);
+  const st=(page-1)*PER, rows=list.slice(st,st+PER);
   $('alist').innerHTML=rows.length?rows.map(card).join(''):`<div class="emptycard">${T('没有找到匹配的机场，换个关键词试试','No matching airports — try another keyword')}</div>`;
   $('ltitle').textContent=(cont==='all'?T('全部机场','All Airports'):CL[cont]+T('机场',' Airports'))+(q?` · “${q.trim()}”`:'')+`（${list.length}）`;
   let h=`<button class="pg${page===1?' dis':''}" data-p="${page-1}">${T('上一页','Prev')}</button>`;
@@ -133,6 +135,7 @@ function doSearch(v){ q=v; page=1; render(); }
 $('aq').addEventListener('input',e=>doSearch(e.target.value));
 $('ago').addEventListener('click',()=>doSearch($('aq').value));
 document.querySelectorAll('[data-cc]').forEach(b=>b.addEventListener('click',()=>{ $('aq').value=b.dataset.cc; doSearch(b.dataset.cc); window.scrollTo({top:0,behavior:'smooth'}); }));
-render();
+$('alist').innerHTML=`<div class="emptycard">${T('正在加载机场数据…','Loading airport data…')}</div>`;
+fetch('/search-suggest.json').then(r=>r.json()).then(j=>{ DATA=j.filter(it=>it[0]===0).map(norm); render(); }).catch(()=>{ $('alist').innerHTML=`<div class="emptycard">${T('数据加载失败，请刷新重试','Failed to load data — please refresh and retry')}</div>`; });
 </script>
 </Base>
