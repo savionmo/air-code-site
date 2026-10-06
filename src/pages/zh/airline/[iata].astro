@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import airlines from '../../../data/airlines';
+import logoExtra from '../../../data/airline-logo-extra.json';
 export function getStaticPaths(){ return airlines.map(a=>({ params:{ iata:a.iata.toLowerCase() }, props:{ a } })); }
 const { a } = Astro.props; const lang='zh';
 const t=(zh,en)=>lang==='zh'?zh:en;
@@ -10,7 +11,7 @@ const sameCountry = airlines.filter(x=>x.country_en===a.country_en && x.iata!==a
 <Base title={`${a.iata} ${name}`} lang={lang} description={`${a.iata} / ${a.icao} ${t('航空公司代码查询','airline code lookup')}`}>
 <div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/airline/`}>{t('航空公司','Airlines')}</a><span class="sep">›</span>{a.iata}</div>
 <section class="dhero">
-{a.icao?<img class="dlogo" src={`https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${a.icao.toUpperCase()}.png`} alt="" loading="lazy" onerror="logoFail(this)" />:<span class="big">{a.iata}</span>}
+{(logoExtra[a.iata]||a.icao)?<img class="dlogo" src={logoExtra[a.iata]||`https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${a.icao.toUpperCase()}.png`} alt="" loading="lazy" onerror="logoFail(this)" />:<span class="big">{a.iata}</span>}
 <div><h1>{name}</h1><p>{a.country_en} · ICAO {a.icao||'-'}</p></div>
 <span class="big right">{a.iata}</span>
 </section>

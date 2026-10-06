@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import airlines from '../../../data/airlines';
+import logoExtra from '../../../data/airline-logo-extra.json';
 import countries from '../../../data/countries.json';
 import countryZh from '../../../data/country-zh.json';
 const FLAG="https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3";
@@ -67,7 +68,7 @@ const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 </aside>
 </div>
 
-<script define:vars={{ DATA:data, lang, PIN, FLAG }}>
+<script define:vars={{ DATA:data, lang, PIN, FLAG, LOGO_EXTRA:logoExtra }}>
 const PER=15; let q='', page=1, sort='d';
 const $=id=>document.getElementById(id);
 const T=(zh,en)=>lang==='zh'?zh:en;
@@ -78,7 +79,7 @@ function card(x){
   const url=`/${lang}/airline/${encodeURIComponent(x.i.toLowerCase())}/`;
   const nm=lang==='zh'?(x.zh||x.en):x.en;
   const loc=lang==='zh'?x.cn:x.ce;
-  const logo=x.o?`<img class="alg" src="https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${x.o.toUpperCase()}.png" alt="" loading="lazy" onerror="logoFail(this)">`:`<span class="mfrb">✈</span>`;
+  const logo=LOGO_EXTRA[x.i]?`<img class="alg" src="${LOGO_EXTRA[x.i]}" alt="" loading="lazy" onerror="logoFail(this)">`:x.o?`<img class="alg" src="https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${x.o.toUpperCase()}.png" alt="" loading="lazy" onerror="logoFail(this)">`:`<span class="mfrb">✈</span>`;
   return `<a class="apcard" href="${url}">${logo}`+
   `<span class="apinfo"><span class="nm">${nm}</span>`+
   `<span class="en">${x.en}</span>${loc?`<span class="loc">${PIN}${loc}</span>`:''}</span>`+

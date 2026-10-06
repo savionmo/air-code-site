@@ -3,6 +3,7 @@ const FLAG="https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3";
 import Base from '../../layouts/Base.astro';
 import airports from '../../data/airports';
 import airlines from '../../data/airlines';
+import logoExtra from '../../data/airline-logo-extra.json';
 import newsAll from '../../data/news.json';
 const lang = 'zh';
 const t = (zh,en)=> lang==='zh'?zh:en;
@@ -44,7 +45,7 @@ const acity = a => lang==='zh' ? (a.city_zh||a.city_en) : a.city_en;
 <div class="sec-head"><h2>{t('热门航空公司','Popular Airlines')}</h2><a class="more" href={`/${lang}/airline/`}>{t('全部航司 →','All airlines →')}</a></div>
 <div class="hot2">
 {hotAirlines.map(a=>(
-<a class="apcard" href={`/${lang}/airline/${a.iata.toLowerCase()}/`}>{a.icao?<img class="alg" src={`https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${a.icao.toUpperCase()}.png`} alt="" loading="lazy" onerror="logoFail(this)" />:<span class="mfrb">✈</span>}<span class="apinfo"><span class="nm">{aname(a)}</span><span class="en">{a.name_en}</span></span><span class="apcode"><b>{a.iata}</b><i>{a.icao}</i></span><span class="go">›</span></a>
+<a class="apcard" href={`/${lang}/airline/${a.iata.toLowerCase()}/`}>{(logoExtra[a.iata]||a.icao)?<img class="alg" src={logoExtra[a.iata]||`https://raw.githubusercontent.com/sexym0nk3y/airline-logos/main/logos/${a.icao.toUpperCase()}.png`} alt="" loading="lazy" onerror="logoFail(this)" />:<span class="mfrb">✈</span>}<span class="apinfo"><span class="nm">{aname(a)}</span><span class="en">{a.name_en}</span></span><span class="apcode"><b>{a.iata}</b><i>{a.icao}</i></span><span class="go">›</span></a>
 ))}
 </div>
 
