@@ -44,7 +44,10 @@ const head = rows[0];
 const idx = n => head.indexOf(n);
 const get = (r, n) => (r[idx(n)] || '').trim();
 
-const zhmap = JSON.parse(readFileSync(new URL('src/data/airport-zh.json', root), 'utf-8'));
+const zhmap = {};
+for (const f of ['src/data/airport-zh-1.json', 'src/data/airport-zh-2.json']) {
+  try { Object.assign(zhmap, JSON.parse(readFileSync(new URL(f, root), 'utf-8'))); } catch {}
+}
 const countries = JSON.parse(readFileSync(new URL('src/data/countries.json', root), 'utf-8'));
 
 const seen = new Map();
