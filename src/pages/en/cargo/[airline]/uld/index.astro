@@ -38,7 +38,7 @@ const cats=[['container',t('集装箱','Containers')],['pallet',t('集装板','P
 <div id={k}><div class="sec-head"><h2>{label}</h2></div>
 <div class="uldgrid">{items.map(u=>(
 <a class="ucard" href={`/${lang}/cargo/${f.airline.toLowerCase()}/uld/${u.code.toLowerCase()}/`}>
-<div class="thumb"><UldDiagram code={u.code} aka="" dims={u.dims_cm} door={null} profile={u.cat==='pallet'?'slab':(['AKE','AKN','RKN'].includes(u.code)?'ld3':'box')} compact={true} /></div>
+<div class="thumb"><UldDiagram code={u.code} aka="" dims={u.dims_cm} door={null} profile={(()=>{const c=u.code;if(u.cat==='pallet')return 'slab';if(['AKE','AKN','RKN'].includes(c))return 'ld3';if(['AKH','DQP','DQF'].includes(c))return 'ld3d';return 'box';})()} compact={true} /></div>
 <span class="codebadge">{u.code}</span><div class="nm">{u.aka?u.aka+' · ':''}{lang==='zh'?u.desc_zh:u.desc_en}</div>
 <div class="sp">{u.dims_cm.join(' × ')} cm<br/>{t('自重','Tare')} {Array.isArray(u.tare_kg)?u.tare_kg.join('~'):u.tare_kg} kg</div>
 </a>))}</div></div>);})}

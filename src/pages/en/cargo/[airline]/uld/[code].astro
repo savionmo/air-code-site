@@ -19,7 +19,7 @@ const catZh={container:t('集装箱','Container'),pallet:t('集装板','Pallet')
 const dims=u.dims_cm.join(' × ')+' cm';
 const tare=Array.isArray(u.tare_kg)?u.tare_kg.join(' ~ ')+' kg':u.tare_kg+' kg';
 const alb=f.airline.toLowerCase();
-const profile=u.cat==='pallet'?'slab':(['AKE','AKN','RKN'].includes(u.code)?'ld3':'box');
+const profile=(()=>{const c=u.code;if(u.cat==='pallet')return 'slab';if(['AKE','AKN','RKN'].includes(c))return 'ld3';if(['AKH','DQP','DQF'].includes(c))return 'ld3d';return 'box';})();
 ---
 <Base title={`${u.code} ${t('集装器规格','ULD Specs')} | ${aname}`} lang={lang} description={`${aname} ${u.code}${t('集装器规格','ULD specs')}`}>
 <style>

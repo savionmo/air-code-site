@@ -1,7 +1,8 @@
 ---
-/* 原创集装器结构示意图(前视图): 按 dims_cm 真实比例绘制
-   LD-3 系列(AKE/AKN/RKN)带标志性斜角; 集装板画为平板; 门用虚线标出
-   数据标注与 JSON 完全一致 */
+/* 原创集装器结构示意图(前视图): 按 dims_cm 真实比例 + IATA 公开外形规范绘制
+   LD-3 系(AKE/AKN/RKN): 单侧底部斜角 | LD3-45(AKH)/LD-8(DQP/DQF): 双侧底部斜角
+   斜角比例取自公开的 LD-8 实测 contour 数据(355×510mm); 集装板为平板; 门虚线标出
+   数据标注与 JSON 完全一致, 未复制任何版权图 */
 interface Props { code:string; aka?:string; dims:number[]; door?:number[]|null; profile:string; compact?:boolean; }
 const { code, aka='', dims, door=null, profile='box', compact=false } = Astro.props;
 const L=dims[0], W=dims[1], Hh=dims[2]||0;
@@ -9,19 +10,21 @@ const isSlab=profile==='slab';
 const vh=isSlab?18:Hh;
 const s=compact?Math.min(104/L,54/Math.max(vh,1)):Math.min(270/L,195/Math.max(vh,1));
 const lw=L*s, lh=vh*s;
-const x0=64, y0=248;
-const top=y0-lh;
+const x0=64, y0=248, top=y0-lh;
+const ch=0.23*lw, chv=0.31*lh; // 底部斜角: 水平0.23W × 垂直0.31H
 let pts='';
 if(profile==='ld3'){
-  const ch=lh*0.34;
-  pts=`${x0},${y0} ${x0+lw},${y0} ${x0+lw},${top+ch} ${x0+lw-ch},${top} ${x0},${top}`;
+  pts=`${x0},${y0} ${x0+lw-ch},${y0} ${x0+lw},${y0-chv} ${x0+lw},${top} ${x0},${top}`;
+}else if(profile==='ld3d'){
+  pts=`${x0+ch},${y0} ${x0+lw-ch},${y0} ${x0+lw},${y0-chv} ${x0+lw},${top} ${x0},${top} ${x0},${y0-chv}`;
 }else{
   pts=`${x0},${y0} ${x0+lw},${y0} ${x0+lw},${top} ${x0},${top}`;
 }
 let doorR=null;
 if(door&&door[0]>0&&door[1]>0&&!isSlab&&Hh>0){
-  const dw=Math.min(door[0],L)*s, dh=Math.min(door[1],Hh)*s;
-  doorR={x:x0+(lw-dw)/2, y:y0-dh, w:dw, h:dh};
+  const dw=Math.min(door[0],L-ch/s)*s, dh=Math.min(door[1],Hh)*s;
+  const dx0=profile==='ld3'?x0:x0+ch*0.4;
+  doorR={x:dx0+(lw-dw)/2- (profile==='ld3'?ch*0.3:0), y:y0-dh, w:dw, h:dh};
 }
 const minX=x0-58, maxX=x0+lw+26;
 const minY=top-(compact?30:40), maxY=y0+(compact?14:34);
