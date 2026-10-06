@@ -127,13 +127,13 @@ a.acard:hover{border-color:var(--fb);box-shadow:0 3px 10px rgba(24,119,242,.18);
 .acard .acard-t{flex:1;min-width:0}
 .acard .acard-t b{display:block;font-size:14.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acard .acard-t i{display:block;font-style:normal;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* 热门机场：桌面一行5个，手机一行2个 */
-.flagrow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+/* 热门机场：桌面一行6个，手机一行4个 */
+.flagrow{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
 .flagcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.06);min-width:0}
 .flagcard .sflag{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#eef1f5}
 .flagcard .fcode{position:absolute;right:8px;bottom:8px;background:#1877F2;color:#fff;font-weight:800;font-size:13px;letter-spacing:1px;padding:4px 10px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 a.flagcard:hover{border-color:var(--fb);box-shadow:0 3px 10px rgba(24,119,242,.18);text-decoration:none}
-@media(max-width:600px){.flagrow{grid-template-columns:repeat(2,1fr);gap:10px}}
+@media(max-width:600px){.flagrow{grid-template-columns:repeat(4,1fr);gap:8px}.hot2 .apcard .go{display:none}}
 /* 热门航司：任何宽度都是一行2个，用列表卡片风 */
 .hot2{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
 .hot2 .apcard{margin:0;min-width:0}
@@ -179,7 +179,7 @@ a.apcard:hover .go{background:var(--fb);color:#fff}
 .sbtn:hover{background:linear-gradient(135deg,#1877F2,#00BFFF)}
 .sbtn:active{transform:scale(.97)}
 /* 全站搜索框统一为首页风格 */
-.capsule{display:flex;gap:10px;background:#fff;border-radius:13px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.12);max-width:640px}
+.capsule{display:flex;gap:10px;background:#fff;border-radius:13px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
 .capsule input{flex:1;min-width:0;padding:13px 14px;border:1.5px solid #D5DAE0;border-radius:10px;font-size:16px;outline:none;background:#F8F9FB}
 .capsule input:focus{border-color:var(--fb);box-shadow:0 0 0 3px rgba(24,119,242,.22);background:#fff}
 .capsule button{flex:none;background:var(--fb);color:#fff;border:0;padding:0 28px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .25s,transform .15s}
