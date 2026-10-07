@@ -5,6 +5,10 @@
 import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import tzlookup from 'tz-lookup';
 
+// 繁体转简体（机场中文名清洗）
+const T2S = {'國際':'国际','機場':'机场','飛':'飞','場':'场','國':'国','軍':'军','奧':'奥','內':'内','爾':'尔','葉':'叶','諾':'诺','魯':'鲁','祕':'秘','岡':'冈','薩':'萨','麗':'丽','蘭':'兰','龍':'龙','龜':'龟','達':'达','亞':'亚','寧':'宁','傑':'杰','韋':'韦','賴':'赖','盧':'卢','鮑':'鲍','愛':'爱','貝':'贝','磯':'矶','馬':'马','羅':'罗','漢':'汉','區':'区','裡':'里','麼':'么','臺':'台'};
+function t2s(s){ if(!s) return s; for(const [t,s2] of Object.entries(T2S)) s=s.replaceAll(t,s2); return s; }
+
 const root = new URL('../', import.meta.url);
 const SRC = 'https://davidmegginson.github.io/ourairports-data/airports.csv';
 const DST = new URL('src/data/', root);
@@ -80,9 +84,9 @@ for (let i = 1; i < rows.length; i++) {
   seen.set(iata, {
     iata, icao,
     name_en: get(r, 'name'),
-    name_zh: (zhmap[iata] || [])[0] || null,
+    name_zh: t2s((zhmap[iata] || [])[0]) || null,
     city_en: get(r, 'municipality'),
-    city_zh: (zhmap[iata] || [])[1] || null,
+    city_zh: t2s((zhmap[iata] || [])[1]) || null,
     country_code: cc,
     country_en: countries[cc] || '',
     lat, lon,
