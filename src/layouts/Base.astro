@@ -7,8 +7,7 @@ const t = (zh:string,en:string)=> lang==='zh'?zh:en;
 const nav = [
   { href:`/${lang}/airport/`, zh:'机场三字码', en:'Airports' },
   { href:`/${lang}/airline/`, zh:'航空公司', en:'Airlines' },
-  { href:`/${lang}/freighter/`, zh:'货机机型', en:'Freighters' },
-  { href:`/${lang}/cargo/`, zh:'货机资料', en:'Cargo Data' },
+  { href:`/${lang}/cargo/`, zh:'货机智库', en:'Cargo Intelligence' },
   { href:`/${lang}/news/`, zh:'资讯', en:'News' },
 ];
 ---
@@ -114,6 +113,10 @@ a.newsrow:hover .tt b{color:var(--fb)}
 /* 航司详情页：左侧 logo + 右侧二字码 */
 .dhero .dlogo{flex:none;height:76px;max-width:190px;object-fit:contain;background:rgba(255,255,255,.95);border-radius:14px;padding:9px 16px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .dhero .big.right{margin-left:auto;font-size:34px;padding:8px 18px;letter-spacing:3px}
+/* 机场详情页：左侧国旗 + 右侧三字码 */
+.dhero .dflag{flex:none;width:96px;height:68px;object-fit:cover;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.dhero .dsub{opacity:.92;font-size:14px;margin:4px 0 0}
+.dhero .dsub .sep{opacity:.6;margin:0 6px}
 /* ===== key-value card ===== */
 .kv{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.06)}
 .kvr{display:flex;gap:12px;padding:12px 17px;border-bottom:1px solid #F0F2F5;font-size:14.5px;align-items:baseline}
@@ -238,8 +241,7 @@ td,th{border-bottom:1px solid #EFF1F4;padding:9px;text-align:left}
 <div><h4>{t('查询','Lookup')}</h4><ul>
 <li><a href={`/${lang}/airport/`}>{t('机场三字码','Airports')}</a></li>
 <li><a href={`/${lang}/airline/`}>{t('航空公司','Airlines')}</a></li>
-<li><a href={`/${lang}/freighter/`}>{t('货机机型','Freighters')}</a></li>
-<li><a href={`/${lang}/cargo/`}>{t('货机资料','Cargo Data')}</a></li>
+<li><a href={`/${lang}/cargo/`}>{t('货机智库','Cargo Intelligence')}</a></li>
 </ul></div>
 <div><h4>{t('资讯','News')}</h4><ul><li><a href={`/${lang}/news/`}>{t('全部资讯','All news')}</a></li></ul></div>
 <div><h4>{t('语言','Language')}</h4><ul><li><a href={`/zh${path}`}>中文</a></li><li><a href={`/en${path}`}>English</a></li></ul></div>

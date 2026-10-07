@@ -23,14 +23,10 @@ const rctry=x=>lang==='zh'?(countryZh[x.country_code]||x.country_en):x.country_e
 <Base title={`${a.iata} ${name}`} lang={lang} description={`${a.iata} / ${a.icao} ${t('机场三字代码查询','airport code lookup')}`}>
 <div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/airport/`}>{t('机场三字码','Airports')}</a><span class="sep">›</span>{a.iata}</div>
 
-<section class="apcard">
-<img class="flag" src={`${FLAG}/${(a.country_code||'').toLowerCase()}.svg`} alt="" />
-<span class="apinfo">
-<span class="nm">{name}{main&&<i class="mainbadge">{t('主机场','Main airport')}</i>}</span>
-<span class="en">{a.name_en}</span>
-<span class="loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>{ctry} · {city}</span>
-</span>
-<span class="apcode"><b>{a.iata}</b><i>{a.icao||''}</i></span>
+<section class="dhero">
+<img class="dflag" src={`${FLAG}/${(a.country_code||'').toLowerCase()}.svg`} alt="" />
+<div><h1>{name}{main&&<i class="mainbadge">{t('主机场','Main airport')}</i>}</h1><p class="dsub">{ctry}<span class="sep">·</span>{city}<span class="sep">·</span>ICAO {a.icao||'-'}</p></div>
+<span class="big right">{a.iata}</span>
 </section>
 
 <div class="kv">

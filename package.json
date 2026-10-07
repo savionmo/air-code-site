@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/check-file-count.mjs",
     "preview": "astro preview",
     "prebuild": "node scripts/build-airports.mjs && node scripts/build-suggest.mjs"
   },
