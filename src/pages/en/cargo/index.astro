@@ -4,7 +4,7 @@ import fleet from '../../../data/cargo-fleet.json';
 const lang='en';
 const t=(zh,en)=>lang==='zh'?zh:en;
 ---
-<Base title={t('货机资料_按航空公司查询','Cargo Data by Airline')} lang={lang} description={t('按航空公司查询货机机型、货舱布局与集装器配置，集装器规格库。','Cargo aircraft, hold layouts and ULD configurations by airline. ULD spec library.')}>
+<Base title={t('货机智库_按航空公司查询','Cargo Intelligence by Airline')} lang={lang} description={t('按航空公司查询货机机型、货舱布局与集装器配置，集装器规格库。','Cargo aircraft, hold layouts and ULD configurations by airline. ULD spec library.')}>
 <style>
 :global(.apt-hero){background:linear-gradient(150deg,#1F8BF7 0%,#0A46A8 100%);border-radius:18px;padding:26px 22px 22px;margin:2px 0 18px;box-shadow:0 8px 24px rgba(11,76,184,.3);color:#fff}
 :global(.apt-crumbs){font-size:13px;color:rgba(255,255,255,.85);margin-bottom:10px}
@@ -24,8 +24,8 @@ const t=(zh,en)=>lang==='zh'?zh:en;
 @media(max-width:600px){</style>
 
 <section class="apt-hero">
-<div class="apt-crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a> › {t('货机资料','Cargo Data')}</div>
-<h1>{t('货机资料','Cargo Data')}</h1>
+<div class="apt-crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a> › {t('货机智库','Cargo Intelligence')}</div>
+<h1>{t('货机智库','Cargo Intelligence')}</h1>
 <p class="sub">{t('按航空公司查货机机型 · 货舱布局 · 集装器配置，附集装器规格库','Aircraft, hold layouts & ULD configs by airline, plus a ULD spec library')}</p>
 </section>
 

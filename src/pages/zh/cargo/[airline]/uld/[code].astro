@@ -48,7 +48,7 @@ const profile=(()=>{const c=u.code;if(u.cat==='pallet')return 'slab';if(['AKE','
 :global(.srcnote){font-size:12.5px;color:var(--muted);margin-top:16px}
 :global(.srcnote a){color:var(--fb)}
 </style>
-<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/cargo/`}>{t('货机资料','Cargo Data')}</a><span class="sep">›</span><a href={`/${lang}/cargo/${alb}/`}>{f.airline}</a><span class="sep">›</span><a href={`/${lang}/cargo/${alb}/uld/`}>{t('集装器','ULDs')}</a><span class="sep">›</span>{u.code}</div>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/cargo/`}>{t('货机智库','Cargo Intelligence')}</a><span class="sep">›</span><a href={`/${lang}/cargo/${alb}/`}>{f.airline}</a><span class="sep">›</span><a href={`/${lang}/cargo/${alb}/uld/`}>{t('集装器','ULDs')}</a><span class="sep">›</span>{u.code}</div>
 <section class="uhero"><span class="ucode">{u.code}</span><div><h1>{catZh[u.cat]}{u.aka?` (${u.aka})`:''}</h1><p class="sub">{aname} · {lang==='zh'?u.desc_zh:u.desc_en}</p></div></section>
 
 <div class="sec-head"><h2><span class="bar"></span>{t('外形示意','Dimensions')}</h2></div>

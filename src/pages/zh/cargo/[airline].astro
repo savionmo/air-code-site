@@ -16,7 +16,7 @@ const acard=a=>`
 <span class="meta">${a.holds.map(h=>`${h.zh}: ${h.capacity}`).slice(0,2).join(' · ')}</span></span>
 <span class="go">›</span></a>`;
 ---
-<Base title={`${name}${t('货机资料_货舱布局与集装器配置',' Cargo Data, Hold Layouts & ULD Configs')}`} lang={lang} description={`${name}${t('货机机型、货舱布局、集装器配置',' freighter types, hold layouts, ULD configs')}`}>
+<Base title={`${name}${t('货机智库_货舱布局与集装器配置',' Cargo Intelligence, Hold Layouts & ULD Configs')}`} lang={lang} description={`${name}${t('货机机型、货舱布局、集装器配置',' freighter types, hold layouts, ULD configs')}`}>
 <style>
 :global(.crumbs){font-size:13px;color:var(--muted);margin:2px 0 12px}
 :global(.crumbs a){color:var(--fb)}:global(.crumbs .sep){margin:0 6px}
@@ -36,9 +36,9 @@ const acard=a=>`
 :global(.srcnote){font-size:12.5px;color:var(--muted);margin-top:18px}
 :global(.srcnote a){color:var(--fb)}
 </style>
-<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/cargo/`}>{t('货机资料','Cargo Data')}</a><span class="sep">›</span>{f.airline}</div>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页','Home')}</a><span class="sep">›</span><a href={`/${lang}/cargo/`}>{t('货机智库','Cargo Intelligence')}</a><span class="sep">›</span>{f.airline}</div>
 <section class="alhero">
-<h1>{name} <span style="font-size:15px;opacity:.85">{t('货机资料','Cargo Data')}</span></h1>
+<h1>{name} <span style="font-size:15px;opacity:.85">{t('货机智库','Cargo Intelligence')}</span></h1>
 <p class="sub">{t('机型货舱布局 · 集装器配置 · 数据来源','Hold layouts · ULD configs · Source')}: <a href={f.src} target="_blank" rel="noopener">{f.airline_en} Cargo</a> · {t('核查','Checked')} {f.checked_at}</p>
 </section>
 {freighters.length>0 && (<div><div class="sec-head"><h2><span class="bar"></span>{t('货机','Freighters')}</h2></div><div set:html={freighters.map(acard).join('')}></div></div>)}
