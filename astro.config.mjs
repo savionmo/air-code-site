@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 export default defineConfig({
-  site: 'https://air-code-site.pages.dev',
+  site: 'https://airdocs.cn',
   output: 'static',
   i18n: {
     defaultLocale: 'zh',
