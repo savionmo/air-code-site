@@ -39,7 +39,7 @@ const add = (section, loc, priority = '0.6') => {
 // ---- static pages (both languages) ----
 for (const lang of ['zh', 'en']) {
   add('static', `/${lang}/`, '1.0');
-  for (const sec of ['airport', 'airline', 'news', 'aircraft', 'freighter', 'cargo'])
+  for (const sec of ['airport', 'airline', 'news', 'aircraft', 'freighter', 'cargo', 'zip'])
     add('static', `/${lang}/${sec}/`, '0.8');
 }
 
@@ -51,6 +51,13 @@ for (const lang of ['zh', 'en']) {
 
 // ---- news (per-language slugs) ----
 for (const n of news) if (n.slug && n.lang) add('content', `/${n.lang}/news/${n.slug}/`, '0.7');
+
+// ---- postal code countries ----
+try {
+  const postal = read('postal-meta.json');
+  for (const lang of ['zh', 'en'])
+    for (const c of postal.countries) if (c.cc) add('content', `/${lang}/zip/${c.cc.toLowerCase()}/`, '0.7');
+} catch {}
 
 // ---- aircraft types ----
 for (const lang of ['zh', 'en'])

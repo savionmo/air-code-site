@@ -7,6 +7,7 @@ const t = (zh:string,en:string)=> lang==='zh'?zh:en;
 const nav = [
   { href:`/${lang}/airport/`, zh:'机场三字码', en:'Airports' },
   { href:`/${lang}/airline/`, zh:'航空公司', en:'Airlines' },
+  { href:`/${lang}/zip/`, zh:'邮编查询', en:'Postal Codes' },
   { href:`/${lang}/cargo/`, zh:'货机智库', en:'Cargo Intelligence' },
   { href:`/${lang}/news/`, zh:'资讯', en:'News' },
 ];
@@ -161,6 +162,25 @@ a.newsrow:hover .tt b{color:var(--fb)}
 .bpqrt b{display:block;font-size:13.5px}
 .bpqrt span{display:block;font-size:13.5px;color:#44536A}
 .bpqrt i{display:block;font-style:normal;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;color:#8494A7;margin-top:3px;letter-spacing:.5px}
+.zgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:0 14px}
+.zctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 4px}
+.zinput{flex:1;min-width:220px;padding:12px 18px;border:1.5px solid var(--line);border-radius:999px;font-size:15px;background:#fff;color:var(--ink)}
+.zinput:focus{outline:none;border-color:var(--fb)}
+.zsel{padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:14.5px;background:#fff;color:var(--ink);max-width:100%}
+.zinfo{background:#E7F0FE;border-radius:12px;padding:11px 15px;font-size:13.5px;color:#33475B;margin:12px 0}
+.zcount{color:var(--muted);font-size:13.5px;margin:10px 2px}
+.ztable{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(16,24,40,.06);display:block;overflow-x:auto}
+.ztable table{width:100%;border-collapse:collapse;min-width:560px}
+.ztable th{background:var(--fb);color:#fff;text-align:left;padding:11px 14px;font-size:13.5px;white-space:nowrap}
+.ztable td{padding:10px 14px;border-top:1px solid #F0F2F5;font-size:14.5px}
+.ztable .zc{font-weight:800;color:var(--fb);white-space:nowrap}
+.zpager{display:flex;gap:10px;align-items:center;justify-content:center;margin:16px 0;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.zpager button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 16px;font-size:14px;cursor:pointer;color:var(--ink)}
+.zpager button:hover:not(:disabled){border-color:var(--fb);color:var(--fb)}
+.zpager button:disabled{opacity:.4;cursor:default}
+.zchiprow{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.zchip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-size:13.5px;cursor:pointer;color:var(--ink)}
+.zchip.on{background:var(--fb);border-color:var(--fb);color:#fff;font-weight:700}
 @media(max-width:760px){
 .bpbody{flex-direction:column}
 .bpmain{padding:18px 18px 20px}
@@ -295,6 +315,7 @@ td,th{border-bottom:1px solid #EFF1F4;padding:9px;text-align:left}
 <div><h4>{t('查询','Lookup')}</h4><ul>
 <li><a href={`/${lang}/airport/`}>{t('机场三字码','Airports')}</a></li>
 <li><a href={`/${lang}/airline/`}>{t('航空公司','Airlines')}</a></li>
+<li><a href={`/${lang}/zip/`}>{t('邮编查询','Postal Codes')}</a></li>
 <li><a href={`/${lang}/cargo/`}>{t('货机智库','Cargo Intelligence')}</a></li>
 </ul></div>
 <div><h4>{t('资讯','News')}</h4><ul><li><a href={`/${lang}/news/`}>{t('全部资讯','All news')}</a></li></ul></div>

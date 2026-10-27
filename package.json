@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "build": "astro build && node scripts/check-file-count.mjs",
     "preview": "astro preview",
-    "prebuild": "node scripts/build-airports.mjs && node scripts/build-suggest.mjs && node scripts/build-sitemap.mjs"
+    "prebuild": "node scripts/build-airports.mjs && node scripts/build-suggest.mjs && node scripts/build-postal.mjs && node scripts/build-sitemap.mjs"
   },
   "dependencies": {
     "astro": "^5.13.0",

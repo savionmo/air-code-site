@@ -1,0 +1,99 @@
+---
+import Base from '../../../layouts/Base.astro';
+import meta from '../../../data/postal-meta.json';
+import countryZh from '../../../data/country-zh.json';
+const lang = 'zh';
+const t = (zh, en) => lang === 'zh' ? zh : en;
+const FLAG = "https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3";
+const CONT = [['AS', '亚洲', 'Asia'], ['EU', '欧洲', 'Europe'], ['NA', '北美洲', 'North America'], ['SA', '南美洲', 'South America'], ['AF', '非洲', 'Africa'], ['OC', '大洋洲', 'Oceania']];
+const fmtN = (n) => n.toLocaleString('en-US');
+const countries = meta.countries;
+const nameOf = (c) => lang === 'zh' ? (countryZh[c.cc] || c.en) : c.en;
+const subOf = (c) => lang === 'zh' ? c.en : (countryZh[c.cc] || '');
+---
+<Base title={t('全球邮编查询', 'World Postal Code Lookup')} lang={lang} description={t('全球邮政编码查询：按国家浏览州/省、城市与邮编，支持邮编反查地名', 'World postal code lookup by country, region and city')}>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页', 'Home')}</a><span class="sep">›</span>{t('邮编查询', 'Postal Codes')}</div>
+
+<section class="dhero">
+<div><h1>{t('全球邮编查询', 'World Postal Code Lookup')}</h1><p class="dsub">{t(`首批 ${countries.length} 个国家 · ${fmtN(meta.total)} 条邮编`, `${countries.length} countries · ${fmtN(meta.total)} postal codes`)}</p></div>
+<span class="big right">ZIP</span>
+</section>
+
+<div class="zctrl">
+<input class="zinput" id="zq" type="search" placeholder={t('输入国家名，或输入邮编（如 10001）选国家进入查找', 'Search a country, or type a postal code (e.g. 10001) and pick a country')} autocomplete="off" />
+</div>
+<p class="zcount" id="zhint" style="display:none"></p>
+<div class="zchiprow" id="zchips">
+<button class="zchip on" data-f="ALL">{t('全部', 'All')}</button>
+{CONT.filter(([code]) => countries.some((c) => c.cont === code)).map(([code, zh, en]) => <button class="zchip" data-f={code}>{lang === 'zh' ? zh : en}</button>)}
+</div>
+
+{CONT.map(([code, zh, en]) => {
+  const list = countries.filter((c) => c.cont === code);
+  if (!list.length) return null;
+  return (
+  <section class="zsec" data-cont={code}>
+  <div class="sec-head"><h2>{lang === 'zh' ? zh : en}</h2></div>
+  <div class="zgrid">
+  {list.map((c) => (
+  <a class="apcard zcard" data-search={`${nameOf(c)} ${c.en} ${c.cc}`.toLowerCase()} href={`/${lang}/zip/${c.cc.toLowerCase()}/`}>
+  <img class="flag" src={`${FLAG}/${c.cc.toLowerCase()}.svg`} alt="" loading="lazy" />
+  <span class="apinfo">
+  <span class="nm">{nameOf(c)}</span>
+  <span class="en">{subOf(c)}</span>
+  <span class="loc">{fmtN(c.count)} {t('条邮编', 'postal codes')}</span>
+  </span>
+  <span class="apcode"><b>{c.cc}</b></span>
+  <span class="go">›</span>
+  </a>
+  ))}
+  </div>
+  </section>
+  );
+})}
+<p class="zcount" id="znone" style="display:none">{t('没有匹配的国家', 'No matching country')}</p>
+
+<div class="zinfo">{t('数据来源：GeoNames（CC BY 4.0），经去重与格式校验后发布；首批上线 25 个国家，更多国家陆续补全。个别国家为区域级精度，详见各国页面说明。', 'Data: GeoNames (CC BY 4.0), deduplicated and format-checked. First release covers 25 countries; more are being added. Some countries are listed at regional precision — see each country page.')}</div>
+
+<script>
+const q = document.getElementById('zq');
+const hint = document.getElementById('zhint');
+const none = document.getElementById('znone');
+const cards = [...document.querySelectorAll('.zcard')];
+const secs = [...document.querySelectorAll('.zsec')];
+let curF = 'ALL';
+const LANG = document.documentElement.lang === 'en' ? 'en' : 'zh';
+function apply() {
+  const v = q.value.trim().toLowerCase();
+  const codeLike = v.length >= 3 && /\d/.test(v) && !/[\u4e00-\u9fff]/.test(v);
+  let anyVisible = false;
+  for (const card of cards) {
+    const sec = card.closest('.zsec');
+    const okF = curF === 'ALL' || sec.dataset.cont === curF;
+    const okQ = !v || card.dataset.search.includes(v);
+    const show = okF && okQ;
+    card.style.display = show ? '' : 'none';
+    if (show) anyVisible = true;
+    const base = card.getAttribute('href').split('?')[0];
+    card.setAttribute('href', codeLike ? base + '?q=' + encodeURIComponent(q.value.trim()) : base);
+  }
+  for (const sec of secs) {
+    const any = [...sec.querySelectorAll('.zcard')].some((c) => c.style.display !== 'none');
+    sec.style.display = any ? '' : 'none';
+  }
+  none.style.display = anyVisible ? 'none' : '';
+  if (codeLike) {
+    hint.style.display = '';
+    hint.textContent = LANG === 'zh'
+      ? '按邮编查找「' + q.value.trim() + '」：点击任意国家进入后将自动在本国数据中搜索该邮编。'
+      : 'Looking up "' + q.value.trim() + '": open any country and the search runs automatically.';
+  } else hint.style.display = 'none';
+}
+q.addEventListener('input', apply);
+document.getElementById('zchips').addEventListener('click', (e) => {
+  const b = e.target.closest('.zchip'); if (!b) return;
+  document.querySelectorAll('.zchip').forEach((x) => x.classList.toggle('on', x === b));
+  curF = b.dataset.f; apply();
+});
+</script>
+</Base>

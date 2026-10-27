@@ -1,0 +1,106 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../../../layouts/Base.astro';
+import meta from '../../../data/postal-meta.json';
+import countryZh from '../../../data/country-zh.json';
+export function getStaticPaths() { return meta.countries.map((c) => ({ params: { cc: c.cc.toLowerCase() }, props: { c } })); }
+const { c } = Astro.props;
+const lang = 'en';
+const t = (zh, en) => lang === 'zh' ? zh : en;
+const FLAG = "https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3";
+const fmtN = (n) => n.toLocaleString('en-US');
+const nameZh = countryZh[c.cc] || c.en;
+const name = lang === 'zh' ? nameZh : c.en;
+const subName = lang === 'zh' ? c.en : nameZh;
+const fmt = lang === 'zh' ? c.fmtZh : c.fmtEn;
+const admName = {};
+for (const a of c.admins) admName[a.code] = lang === 'zh' ? (a.zh || a.name) : a.name;
+let first = [];
+try {
+  const raw = fs.readFileSync(path.join(process.cwd(), 'public/zip-data', c.cc.toLowerCase() + '.json'), 'utf8');
+  first = JSON.parse(raw).rows.slice(0, 50);
+} catch {}
+const sameCont = meta.countries.filter((x) => x.cont === c.cont && x.cc !== c.cc).slice(0, 8);
+const contName = { AS: ['亚洲', 'Asia'], EU: ['欧洲', 'Europe'], NA: ['北美洲', 'North America'], SA: ['南美洲', 'South America'], AF: ['非洲', 'Africa'], OC: ['大洋洲', 'Oceania'] }[c.cont] || ['', ''];
+---
+<Base title={`${name}${t('邮编查询', ' Postal Codes')} · ${c.cc}`} lang={lang} description={`${name}（${c.en}）邮政编码查询：${fmtN(c.count)} ${t('条邮编，按州/省、城市浏览，支持搜索与经纬度', 'postal codes by region and city, with search and coordinates')}`}>
+<div class="crumbs"><a href={`/${lang}/`}>{t('首页', 'Home')}</a><span class="sep">›</span><a href={`/${lang}/zip/`}>{t('邮编查询', 'Postal Codes')}</a><span class="sep">›</span>{name}</div>
+
+<section class="dhero">
+<img class="dflag" src={`${FLAG}/${c.cc.toLowerCase()}.svg`} alt="" />
+<div><h1>{lang === 'zh' ? `${name}邮编` : `Postal Codes in ${c.en}`}</h1><p class="dsub">{subName}<span class="sep">·</span>{t('共', 'Total')} {fmtN(c.count)} {t('条', 'codes')}<span class="sep">·</span>{lang === 'zh' ? contName[0] : contName[1]}</p></div>
+<span class="big right">{c.cc}</span>
+</section>
+
+{fmt && <div class="zinfo">{t('邮编格式', 'Format')}：{fmt}</div>}
+
+<div class="zctrl">
+<input class="zinput" id="zq" type="search" placeholder={t('输入邮编或城市名搜索，如 10001 / New York', 'Search by postal code or city, e.g. 10001 / New York')} autocomplete="off" />
+{c.admins.length > 1 && (
+<select class="zsel" id="zregion">
+<option value="">{t('全部州/省/地区', 'All regions')}（{c.admins.length}）</option>
+{c.admins.map((a) => <option value={a.code}>{admName[a.code]} ({a.code}) · {fmtN(a.count)}</option>)}
+</select>
+)}
+</div>
+<p class="zcount" id="zcount">{t('共', 'Total')} {fmtN(c.count)} {t('条 · 每页 50 条', 'codes · 50 per page')}</p>
+
+<div class="ztable"><table>
+<thead><tr><th>{t('邮编', 'Postal code')}</th><th>{t('城市 / 地区', 'City / place')}</th><th>{t('州 / 省 / 地区', 'State / region')}</th><th>{t('经纬度', 'Coordinates')}</th></tr></thead>
+<tbody id="zbody">
+{first.map((r) => <tr><td class="zc">{r[0]}</td><td>{r[1]}</td><td>{admName[r[2]] || r[2]}</td><td>{r[3]}, {r[4]}</td></tr>)}
+</tbody>
+</table></div>
+
+<div class="zpager"><button id="zprev">{t('‹ 上一页', '‹ Prev')}</button><span id="zpage"></span><button id="znext">{t('下一页 ›', 'Next ›')}</button></div>
+
+{sameCont.length > 0 && (
+<div>
+<div class="sec-head"><h2>{t('同大洲其他国家邮编', 'More countries in this region')}</h2><a class="more" href={`/${lang}/zip/`}>{t('全部国家 →', 'All countries →')}</a></div>
+<div class="zchiprow">
+{sameCont.map((x) => <a class="chip" href={`/${lang}/zip/${x.cc.toLowerCase()}/`}>{lang === 'zh' ? (countryZh[x.cc] || x.en) : x.en} {x.cc}</a>)}
+</div>
+</div>
+)}
+
+<div class="zinfo">{t('数据来源：GeoNames（CC BY 4.0），经去重与格式校验；经纬度为邮编所辖区域参考坐标。', 'Data: GeoNames (CC BY 4.0), deduplicated and format-checked. Coordinates are reference points for each postal area.')}</div>
+
+<script define:vars={{ cc: c.cc.toLowerCase(), adm: admName, total: c.count, lang }}>
+const PER = 50;
+let DATA = null, page = 1;
+const $q = document.getElementById('zq'), $r = document.getElementById('zregion');
+const $b = document.getElementById('zbody'), $c = document.getElementById('zcount'), $p = document.getElementById('zpage');
+const $prev = document.getElementById('zprev'), $next = document.getElementById('znext');
+const S = lang === 'zh'
+  ? { total: '条', per: '每页 50 条', page: (a, b) => '第 ' + a + ' / ' + b + ' 页', none: '没有匹配的结果，换个关键词试试', all: '全部' }
+  : { total: 'codes', per: '50 per page', page: (a, b) => 'Page ' + a + ' / ' + b, none: 'No matching results', all: 'All' };
+const esc = (s) => String(s).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+function filtered() {
+  if (!DATA) return null;
+  const q = $q.value.trim().toLowerCase(), rg = $r ? $r.value : '';
+  return DATA.filter((r) => (rg === '' || r[2] === rg) && (q === '' || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)));
+}
+function render() {
+  const f = filtered();
+  if (!f) return;
+  const pages = Math.max(1, Math.ceil(f.length / PER));
+  if (page > pages) page = pages;
+  const rows = f.slice((page - 1) * PER, page * PER);
+  $b.innerHTML = rows.length
+    ? rows.map((r) => '<tr><td class="zc">' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(adm[r[2]] || r[2] || '') + '</td><td>' + r[3] + ', ' + r[4] + '</td></tr>').join('')
+    : '<tr><td colspan="4">' + S.none + '</td></tr>';
+  $c.textContent = f.length.toLocaleString('en-US') + ' ' + S.total + ' · ' + S.per;
+  $p.textContent = S.page(page, pages);
+  $prev.disabled = page <= 1; $next.disabled = page >= pages;
+}
+const q0 = new URLSearchParams(location.search).get('q');
+if (q0) $q.value = q0;
+$q.addEventListener('input', () => { page = 1; render(); });
+if ($r) $r.addEventListener('change', () => { page = 1; render(); });
+$prev.addEventListener('click', () => { if (page > 1) { page--; render(); } });
+$next.addEventListener('click', () => { page++; render(); });
+$prev.disabled = true; $next.disabled = true;
+fetch('/zip-data/' + cc + '.json').then((r) => r.json()).then((j) => { DATA = j.rows; render(); }).catch(() => { $p.textContent = ''; });
+</script>
+</Base>
