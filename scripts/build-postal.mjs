@@ -104,12 +104,13 @@ for (const line of text.split('\n')) {
   const code = (p[1] || '').trim(), place = (p[2] || '').trim();
   if (!code || !place) continue;
   const admName = (p[3] || '').trim(), admCode = (p[4] || '').trim();
+  const a2 = (p[5] || '').trim(), a3 = (p[7] || '').trim();
   const lat = Math.round(parseFloat(p[9]) * 10000) / 10000, lon = Math.round(parseFloat(p[10]) * 10000) / 10000;
   if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
   if (!byCc.has(p[0])) byCc.set(p[0], new Map());
   const m = byCc.get(p[0]);
-  const key = code + '|' + place + '|' + admCode;
-  if (!m.has(key)) m.set(key, [code, place, admName, admCode, lat, lon]);
+  const key = code + '|' + place + '|' + admCode + '|' + a2 + '|' + a3;
+  if (!m.has(key)) m.set(key, { code, place, admName, admCode, a2, a3, lat, lon });
   totalIn++;
 }
 
@@ -120,21 +121,31 @@ let totalOut = 0;
 for (const [cc, en, cont] of INCLUDE) {
   const m = byCc.get(cc);
   const rows = m ? [...m.values()] : [];
-  rows.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0));
-  // 前端行格式：[邮编, 地名, 地区代码, 纬度, 经度]（地区名从 meta.admins 按代码查）
-  const out = rows.map((r) => [r[0], r[1], r[3], r[4], r[5]]);
-  fs.writeFileSync(path.join(ROOT, 'public/zip-data', cc.toLowerCase() + '.json'), JSON.stringify({ cc, rows: out }));
+  rows.sort((a, b) => (a.code < b.code ? -1 : a.code > b.code ? 1 : a.place < b.place ? -1 : a.place > b.place ? 1 : 0));
+  // 下钻层级：admin1（州/省）之外，admin2（市/县）、admin3（区）覆盖率 ≥50% 的依次入选（德国 a2 覆盖低、a3 高 → 只用 a3）
+  const cov = (f) => (rows.length ? rows.filter((r) => r[f]).length / rows.length : 0);
+  const fields = ['a2', 'a3'].filter((f) => cov(f) >= 0.5);
+  const dicts = fields.map((f) => {
+    const d = new Map(); const names = [];
+    for (const r of rows) { const v = r[f]; if (v && !d.has(v)) { d.set(v, names.length); names.push(v); } }
+    return { f, d, names };
+  });
+  const gidx = (di, r) => (dicts[di] ? (r[fields[di]] ? dicts[di].d.get(r[fields[di]]) : -1) : -1);
+  // 前端行格式：[邮编, 地名, 地区代码, 分组1索引, 分组2索引, 纬度, 经度]（分组名查 grp 字典，地区名查 meta.admins）
+  const out = rows.map((r) => [r.code, r.place, r.admCode, gidx(0, r), gidx(1, r), r.lat, r.lon]);
+  fs.writeFileSync(path.join(ROOT, 'public/zip-data', cc.toLowerCase() + '.json'),
+    JSON.stringify({ cc, grp: dicts.map(({ f, names }) => ({ f, names })), rows: out }));
   const admMap = new Map();
   for (const r of rows) {
-    const k = r[3] || '';
-    if (!admMap.has(k)) admMap.set(k, { code: k, name: r[2] || k, zh: cc === 'CN' ? (CN_ADMIN_ZH[r[2]] || '') : '', count: 0 });
+    const k = r.admCode || '';
+    if (!admMap.has(k)) admMap.set(k, { code: k, name: r.admName || k, zh: cc === 'CN' ? (CN_ADMIN_ZH[r.admName] || '') : '', count: 0 });
     admMap.get(k).count++;
   }
   const admins = [...admMap.values()].filter((a) => a.code || a.name).sort((a, b) => a.name.localeCompare(b.name));
   const fmt = FORMAT[cc] || ['', ''];
-  metas.push({ cc, en, cont, count: rows.length, admins, fmtZh: fmt[0], fmtEn: fmt[1] });
+  metas.push({ cc, en, cont, count: rows.length, admins, fmtZh: fmt[0], fmtEn: fmt[1], grp: fields.length, gf: fields });
   totalOut += rows.length;
-  console.log('[postal]', cc, rows.length, 'rows,', admins.length, 'regions');
+  console.log('[postal]', cc, rows.length, 'rows,', admins.length, 'regions, drill:', fields.join('+') || 'flat');
 }
 metas.sort((a, b) => b.count - a.count);
 fs.writeFileSync(path.join(ROOT, 'src/data/postal-meta.json'), JSON.stringify({ generated: new Date().toISOString().slice(0, 10), total: totalOut, countries: metas }));

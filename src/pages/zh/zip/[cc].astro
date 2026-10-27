@@ -16,15 +16,27 @@ const subName = lang === 'zh' ? c.en : nameZh;
 const fmt = lang === 'zh' ? c.fmtZh : c.fmtEn;
 const admName = {};
 for (const a of c.admins) admName[a.code] = lang === 'zh' ? (a.zh || a.name) : a.name;
-let first = [];
+const hasA1 = c.admins.length > 1;
+const grpN = c.grp || 0;
+const LVL = [t('州 / 省 / 地区', 'State / region'), t('市 / 县', 'City / county'), t('区 / 县', 'District')];
+const colLabels = [...(hasA1 ? [LVL[0]] : []), ...(grpN >= 1 ? [LVL[1]] : []), ...(grpN >= 2 ? [LVL[2]] : [])];
+let first = [], grpNames = [];
 try {
   const raw = fs.readFileSync(path.join(process.cwd(), 'public/zip-data', c.cc.toLowerCase() + '.json'), 'utf8');
-  first = JSON.parse(raw).rows.slice(0, 50);
+  const parsed = JSON.parse(raw);
+  first = parsed.rows.slice(0, 50);
+  grpNames = (parsed.grp || []).map((g) => g.names);
 } catch {}
+const cellOf = (r, li) => {
+  if (hasA1 && li === 0) return admName[r[2]] || r[2] || '';
+  const gi = hasA1 ? li - 1 : li;
+  return (grpNames[gi] && grpNames[gi][r[3 + gi]]) || '';
+};
 const sameCont = meta.countries.filter((x) => x.cont === c.cont && x.cc !== c.cc).slice(0, 8);
 const contName = { AS: ['亚洲', 'Asia'], EU: ['欧洲', 'Europe'], NA: ['北美洲', 'North America'], SA: ['南美洲', 'South America'], AF: ['非洲', 'Africa'], OC: ['大洋洲', 'Oceania'] }[c.cont] || ['', ''];
+const drill = hasA1 || grpN > 0;
 ---
-<Base title={`${name}${t('邮编查询', ' Postal Codes')} · ${c.cc}`} lang={lang} description={`${name}（${c.en}）邮政编码查询：${fmtN(c.count)} ${t('条邮编，按州/省、城市浏览，支持搜索与经纬度', 'postal codes by region and city, with search and coordinates')}`}>
+<Base title={`${name}${t('邮编查询', ' Postal Codes')} · ${c.cc}`} lang={lang} description={`${name}（${c.en}）邮政编码查询：${fmtN(c.count)} ${t('条邮编，按州/省、市/县、区分级浏览，支持搜索与经纬度', 'postal codes by region, city and district, with search and coordinates')}`}>
 <div class="crumbs"><a href={`/${lang}/`}>{t('首页', 'Home')}</a><span class="sep">›</span><a href={`/${lang}/zip/`}>{t('邮编查询', 'Postal Codes')}</a><span class="sep">›</span>{name}</div>
 
 <section class="dhero">
@@ -36,24 +48,33 @@ const contName = { AS: ['亚洲', 'Asia'], EU: ['欧洲', 'Europe'], NA: ['北�
 {fmt && <div class="zinfo">{t('邮编格式', 'Format')}：{fmt}</div>}
 
 <div class="zctrl">
-<input class="zinput" id="zq" type="search" placeholder={t('输入邮编或城市名搜索，如 10001 / New York', 'Search by postal code or city, e.g. 10001 / New York')} autocomplete="off" />
-{c.admins.length > 1 && (
-<select class="zsel" id="zregion">
-<option value="">{t('全部州/省/地区', 'All regions')}（{c.admins.length}）</option>
-{c.admins.map((a) => <option value={a.code}>{admName[a.code]} ({a.code}) · {fmtN(a.count)}</option>)}
-</select>
-)}
+<input class="zinput" id="zq" type="search" placeholder={t('输入邮编或地名直接搜索，或在下方按地区逐级查找', 'Search by postal code or place, or drill down by region below')} autocomplete="off" />
 </div>
-<p class="zcount" id="zcount">{t('共', 'Total')} {fmtN(c.count)} {t('条 · 每页 50 条', 'codes · 50 per page')}</p>
 
+{drill && <nav class="zpath" id="zpath"><span class="cur">{name}</span></nav>}
+
+{drill && (
+<div id="zpanel">
+<p class="zpanel-h" id="zpanel-h">{hasA1 ? `${t('按', 'Browse by')} ${LVL[0]}${t('选择', '')}（${c.admins.length}）` : t('按地区选择', 'Browse by region')}</p>
+<div class="zgrid" id="zpanel-g">
+{hasA1 && c.admins.map((a) => (
+<button class="zgrp" data-lv="0" data-v={a.code}><b>{admName[a.code]}</b><span>{fmtN(a.count)} {t('条', 'codes')}</span><span class="go">›</span></button>
+))}
+</div>
+</div>
+)}
+
+<div id="ztwrap" style={drill ? 'display:none' : ''}>
+<p class="zcount" id="zcount">{t('共', 'Total')} {fmtN(c.count)} {t('条 · 每页 50 条', 'codes · 50 per page')}</p>
 <div class="ztable"><table>
-<thead><tr><th>{t('邮编', 'Postal code')}</th><th>{t('城市 / 地区', 'City / place')}</th><th>{t('州 / 省 / 地区', 'State / region')}</th><th>{t('经纬度', 'Coordinates')}</th></tr></thead>
+<thead><tr><th>{t('邮编', 'Postal code')}</th><th>{t('地名', 'Place')}</th>{colLabels.map((lb) => <th>{lb}</th>)}<th>{t('经纬度', 'Coordinates')}</th></tr></thead>
 <tbody id="zbody">
-{first.map((r) => <tr><td class="zc">{r[0]}</td><td>{r[1]}</td><td>{admName[r[2]] || r[2]}</td><td>{r[3]}, {r[4]}</td></tr>)}
+{first.map((r) => <tr><td class="zc">{r[0]}</td><td>{r[1]}</td>{colLabels.map((_, li) => <td>{cellOf(r, li)}</td>)}<td>{r[5]}, {r[6]}</td></tr>)}
 </tbody>
 </table></div>
-
 <div class="zpager"><button id="zprev">{t('‹ 上一页', '‹ Prev')}</button><span id="zpage"></span><button id="znext">{t('下一页 ›', 'Next ›')}</button></div>
+</div>
+<noscript><style>#ztwrap{display:block!important}#zpanel{display:none}</style></noscript>
 
 {sameCont.length > 0 && (
 <div>
@@ -66,41 +87,117 @@ const contName = { AS: ['亚洲', 'Asia'], EU: ['欧洲', 'Europe'], NA: ['北�
 
 <div class="zinfo">{t('数据来源：GeoNames（CC BY 4.0），经去重与格式校验；经纬度为邮编所辖区域参考坐标。', 'Data: GeoNames (CC BY 4.0), deduplicated and format-checked. Coordinates are reference points for each postal area.')}</div>
 
-<script define:vars={{ cc: c.cc.toLowerCase(), adm: admName, total: c.count, lang }}>
+<script define:vars={{ cc: c.cc.toLowerCase(), adm: admName, hasA1, grpN, lang, rootName: name }}>
 const PER = 50;
-let DATA = null, page = 1;
-const $q = document.getElementById('zq'), $r = document.getElementById('zregion');
-const $b = document.getElementById('zbody'), $c = document.getElementById('zcount'), $p = document.getElementById('zpage');
+let DATA = null, GRP = [], LV = [], page = 1;
+let sel = [null, null, null];
+const $q = document.getElementById('zq'), $b = document.getElementById('zbody'), $c = document.getElementById('zcount'), $p = document.getElementById('zpage');
 const $prev = document.getElementById('zprev'), $next = document.getElementById('znext');
+const $panel = document.getElementById('zpanel'), $ph = document.getElementById('zpanel-h'), $pg = document.getElementById('zpanel-g');
+const $tw = document.getElementById('ztwrap'), $path = document.getElementById('zpath');
 const S = lang === 'zh'
-  ? { total: '条', per: '每页 50 条', page: (a, b) => '第 ' + a + ' / ' + b + ' 页', none: '没有匹配的结果，换个关键词试试', all: '全部' }
-  : { total: 'codes', per: '50 per page', page: (a, b) => 'Page ' + a + ' / ' + b, none: 'No matching results', all: 'All' };
+  ? { total: '条', per: '每页 50 条', page: (a, b2) => '第 ' + a + ' / ' + b2 + ' 页', none: '没有匹配的结果，换个关键词试试', other: '其他', pick: '按', pick2: '选择', loading: '数据加载中…', lv: ['州 / 省 / 地区', '市 / 县', '区 / 县'] }
+  : { total: 'codes', per: '50 per page', page: (a, b2) => 'Page ' + a + ' / ' + b2, none: 'No matching results', other: 'Other', pick: 'Browse by', pick2: '', loading: 'Loading…', lv: ['State / region', 'City / county', 'District'] };
 const esc = (s) => String(s).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-function filtered() {
-  if (!DATA) return null;
-  const q = $q.value.trim().toLowerCase(), rg = $r ? $r.value : '';
-  return DATA.filter((r) => (rg === '' || r[2] === rg) && (q === '' || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)));
+function buildLevels() {
+  LV = [];
+  if (hasA1) LV.push({ kind: 'a1', label: S.lv[0] });
+  GRP.forEach((g, i) => LV.push({ kind: 'g', gi: i, label: S.lv[i + 1] }));
 }
-function render() {
-  const f = filtered();
-  if (!f) return;
-  const pages = Math.max(1, Math.ceil(f.length / PER));
+function rowVal(r, lv) { return lv.kind === 'a1' ? String(r[2]) : String(r[3 + lv.gi]); }
+function valLabel(lv, v) {
+  if (lv.kind === 'a1') return v === '' || v === '-1' ? S.other : (adm[v] || v);
+  const idx = parseInt(v, 10);
+  return idx < 0 ? S.other : (GRP[lv.gi].names[idx] || S.other);
+}
+function cellLabel(r, lv) { return valLabel(lv, rowVal(r, lv)); }
+function scopeRows(upto) {
+  let rows = DATA;
+  for (let i = 0; i < upto; i++) {
+    if (sel[i] === null) continue;
+    const lv = LV[i];
+    rows = rows.filter((r) => rowVal(r, lv) === sel[i]);
+  }
+  return rows;
+}
+function distinct(i) {
+  const m = new Map();
+  for (const r of scopeRows(i)) { const v = rowVal(r, LV[i]); m.set(v, (m.get(v) || 0) + 1); }
+  return m;
+}
+function currentLevel() {
+  for (let i = 0; i < LV.length; i++) {
+    if (sel[i] !== null) continue;
+    if (distinct(i).size <= 1) continue;
+    return i;
+  }
+  return -1;
+}
+function renderPath() {
+  if (!$path) return;
+  let h = '<button data-reset="0">' + esc(rootName) + '</button>';
+  let last = 0;
+  for (let i = 0; i < LV.length; i++) if (sel[i] !== null) last = i + 1;
+  for (let i = 0; i < LV.length; i++) {
+    if (sel[i] === null) break;
+    const isLast = i + 1 === last;
+    h += '<span class="sep">›</span>' + (isLast
+      ? '<span class="cur">' + esc(valLabel(LV[i], sel[i])) + '</span>'
+      : '<button data-reset="' + (i + 1) + '">' + esc(valLabel(LV[i], sel[i])) + '</button>');
+  }
+  $path.innerHTML = h;
+}
+function showPanel(i) {
+  const d = distinct(i);
+  const items = [...d.entries()].sort((a, b2) => valLabel(LV[i], a[0]).localeCompare(valLabel(LV[i], b2[0])));
+  $ph.textContent = S.pick + ' ' + LV[i].label + S.pick2 + '（' + items.length + '）';
+  $pg.innerHTML = items.map(([v, n]) => '<button class="zgrp" data-lv="' + i + '" data-v="' + esc(v) + '"><b>' + esc(valLabel(LV[i], v)) + '</b><span>' + n.toLocaleString('en-US') + ' ' + S.total + '</span><span class="go">›</span></button>').join('');
+  $panel.style.display = ''; $tw.style.display = 'none';
+}
+function showTable(rows) {
+  if ($panel) $panel.style.display = 'none';
+  $tw.style.display = '';
+  const pages = Math.max(1, Math.ceil(rows.length / PER));
   if (page > pages) page = pages;
-  const rows = f.slice((page - 1) * PER, page * PER);
-  $b.innerHTML = rows.length
-    ? rows.map((r) => '<tr><td class="zc">' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(adm[r[2]] || r[2] || '') + '</td><td>' + r[3] + ', ' + r[4] + '</td></tr>').join('')
-    : '<tr><td colspan="4">' + S.none + '</td></tr>';
-  $c.textContent = f.length.toLocaleString('en-US') + ' ' + S.total + ' · ' + S.per;
+  const slice = rows.slice((page - 1) * PER, page * PER);
+  $b.innerHTML = slice.length
+    ? slice.map((r) => '<tr><td class="zc">' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td>' + LV.map((lv) => '<td>' + esc(cellLabel(r, lv)) + '</td>').join('') + '<td>' + r[5] + ', ' + r[6] + '</td></tr>').join('')
+    : '<tr><td colspan="' + (3 + LV.length) + '">' + S.none + '</td></tr>';
+  $c.textContent = rows.length.toLocaleString('en-US') + ' ' + S.total + ' · ' + S.per;
   $p.textContent = S.page(page, pages);
   $prev.disabled = page <= 1; $next.disabled = page >= pages;
+}
+function render() {
+  renderPath();
+  if (!DATA) return;
+  const q = $q.value.trim().toLowerCase();
+  if (q) {
+    showTable(scopeRows(LV.length).filter((r) => r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)));
+    return;
+  }
+  const cl = currentLevel();
+  if (cl === -1 || !$panel) showTable(scopeRows(LV.length));
+  else showPanel(cl);
 }
 const q0 = new URLSearchParams(location.search).get('q');
 if (q0) $q.value = q0;
 $q.addEventListener('input', () => { page = 1; render(); });
-if ($r) $r.addEventListener('change', () => { page = 1; render(); });
 $prev.addEventListener('click', () => { if (page > 1) { page--; render(); } });
 $next.addEventListener('click', () => { page++; render(); });
+if ($pg) $pg.addEventListener('click', (e) => {
+  const btn = e.target.closest('.zgrp'); if (!btn) return;
+  sel[parseInt(btn.dataset.lv, 10)] = btn.dataset.v;
+  page = 1;
+  if (!DATA && $ph) $ph.textContent = S.loading;
+  render();
+});
+if ($path) $path.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-reset]'); if (!btn) return;
+  const k = parseInt(btn.dataset.reset, 10);
+  for (let i = k; i < sel.length; i++) sel[i] = null;
+  page = 1; render();
+});
 $prev.disabled = true; $next.disabled = true;
-fetch('/zip-data/' + cc + '.json').then((r) => r.json()).then((j) => { DATA = j.rows; render(); }).catch(() => { $p.textContent = ''; });
+fetch('/zip-data/' + cc + '.json').then((r) => r.json()).then((j) => { DATA = j.rows; GRP = j.grp || []; buildLevels(); render(); }).catch(() => {});
 </script>
 </Base>
